@@ -1,19 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.shixun.android.leaving_detection.MainActivity">
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/start_detection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/start_detection"
+            android:textSize="20sp"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/stop_detection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/stop_detection"
+            android:textSize="20sp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/use_pressure"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Use Pressure"
+            android:layout_marginLeft="150dp"
+            android:visibility="invisible"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/wifi_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/wifi_level"
+                android:layout_gravity="center"
+                android:textSize="25sp"
+                android:visibility="invisible"/>
+            <TextView
+                android:id="@+id/pressure_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Pressure Level"
+                android:layout_gravity="center"
+                android:textSize="25sp"
+                android:visibility="invisible"/>
+            <TextView
+                android:id="@+id/possibility"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Possibility"
+                android:layout_gravity="center"
+                android:textSize="25sp"
+                android:visibility="invisible"/>
+            <TextView
+                android:id="@+id/walking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Walking"
+                android:layout_gravity="center"
+                android:textSize="25sp"
+                android:visibility="invisible"/>
+        </LinearLayout>
+    </FrameLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/status"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-</android.support.constraint.ConstraintLayout>
+        android:textSize="36dp"
+        android:gravity="center"
+        tools:text="Here shows the status"
+        />
+</LinearLayout>

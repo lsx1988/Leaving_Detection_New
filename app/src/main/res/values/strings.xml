@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Leaving_Detection</string>
+    <string name="action_logout">Logout</string>
+    <string name="title_activity_login">LOGIN</string>
+    <string name="publish">Publish</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="username">Username</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="prompt_password">Password</string>
+    <string name="error_invalid_email">Invalid Email Format</string>
+    <string name="error_invalid_password">The password length is over 4</string>
+    <string name="error_incorrect_password">Invalid password</string>
+    <string name="error_field_required">Required Field</string>
+    <string name="title_activity_register">Register</string>
+    <string name="action_sign_in">Register and Login</string>
+    <string name="start_detection">START</string>
+    <string name="stop_detection">STOP</string>
+    <string name="leaving_detected">Leaving Detected</string>
+    <string name="wifi_level">Here is wifi level</string>
+    <string name="Wifi_disconnect">No Wifi</string>
+    <string name="stop_run">Program stops</string>
 </resources>
