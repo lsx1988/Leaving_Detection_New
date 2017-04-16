@@ -2,8 +2,11 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#FFF</color>
     <color name="indicator_color">#F00</color>
     <color name="isWalking">#6dc066</color>
     <color name="notWalking">#FFF</color>
+    <color name="mainBackground">#66BB6A</color>
+    <color name="normalTextColor">#FFF</color>
+    <color name="btnBackground">#2E7D32</color>
 </resources>

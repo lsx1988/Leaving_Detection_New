@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFF"
+              android:id="@+id/setting_form">
+
+       <ProgressBar
+           android:id="@+id/setting_progress"
+           style="?android:attr/progressBarStyleLarge"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginBottom="8dp"
+           android:visibility="gone"/>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="10dp"
+           android:gravity="center_vertical">
+
+              <TextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="Accelorator Meter"
+                  android:textSize="30dp"/>
+
+              <com.kyleduo.switchbutton.SwitchButton
+                  android:id="@+id/switch_button_accel"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.2"
+                  app:kswBackColor="@color/avoscloud_blue"
+                  app:kswFadeBack="true"
+                  app:kswTextOff="Off"
+                  app:kswTextOn="On"/>
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="10dp"
+           android:gravity="center_vertical">
+
+              <TextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="Megnatic Meter"
+                  android:textSize="30dp"/>
+
+              <com.kyleduo.switchbutton.SwitchButton
+                  android:id="@+id/switch_button_megnatic"
+                  android:layout_width="0dp"
+                  android:layout_weight="0.2"
+                  android:layout_height="wrap_content"
+                  app:kswBackColor="@color/avoscloud_blue"
+                  app:kswFadeBack="true"
+                  app:kswTextOff="Off"
+                  app:kswTextOn="On"/>
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="10dp"
+           android:gravity="center_vertical">
+
+              <TextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="Wifi Scan"
+                  android:textSize="30dp"/>
+
+              <com.kyleduo.switchbutton.SwitchButton
+                  android:id="@+id/switch_button_wifi"
+                  android:layout_width="0dp"
+                  android:layout_weight="0.2"
+                  android:layout_height="wrap_content"
+                  app:kswBackColor="@color/avoscloud_blue"
+                  app:kswFadeBack="true"
+                  app:kswTextOff="Off"
+                  app:kswTextOn="On"/>
+       </LinearLayout>
+
+       <Button
+           android:id="@+id/save_setting"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Save"
+           android:layout_gravity="center"/>
+</LinearLayout>

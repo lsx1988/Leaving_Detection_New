@@ -3,15 +3,11 @@ package com.shixun.android.leaving_detection;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,17 +18,15 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SignUpCallback;
-import com.shixun.android.leaving_detection.Detection.MainActivity;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by shixunliu on 10/4/17.
  */
 
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends GeneralFragment {
 
     @BindView(R.id.username) AutoCompleteTextView mUsernameView;
     @BindView(R.id.password) EditText mPasswordView;
@@ -41,16 +35,16 @@ public class RegisterFragment extends Fragment {
     @BindView(R.id.username_register_button) Button mUsernameSignInButton;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onResume() {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.register));
+        setHasOptionsMenu(true);
+        super.onResume();
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_register, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+    protected int getLayoutID() {
+        return R.layout.fragment_register;
     }
 
     @OnClick(R.id.username_register_button)
@@ -93,7 +87,9 @@ public class RegisterFragment extends Fragment {
                 public void done(AVException e) {
                     if (e == null) {
                         // 注册成功，把用户对象赋值给当前用户 AVUser.getCurrentUser()
-                        startActivity(new Intent(getContext(), MainActivity.class));
+                        if(getActivity() instanceof btnClickListener) {
+                            ((btnClickListener) getActivity()).onRegisterSuccessful();
+                        }
                     } else {
                         // 失败的原因可能有多种，常见的是用户名已经存在。
                         showProgress(false);
@@ -145,5 +141,17 @@ public class RegisterFragment extends Fragment {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if(getActivity() instanceof btnClickListener) {
+                ((btnClickListener) getActivity()).onUpNevigationClick();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
