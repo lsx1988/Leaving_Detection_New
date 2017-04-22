@@ -20,6 +20,8 @@ import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MyService extends Service{
 
@@ -40,6 +42,8 @@ public class MyService extends Service{
     private boolean usePressure;
     private boolean wifiscanTrigger;
     private boolean isPhoneAlarm;
+
+    ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -91,6 +95,7 @@ public class MyService extends Service{
         mSensorManager.unregisterListener(mSensorEventListener);
         Log.d(TAG, "onDestroy executed");
     }
+
 
     private SensorEventListener mSensorEventListener = new SensorEventListener() {
         @Override

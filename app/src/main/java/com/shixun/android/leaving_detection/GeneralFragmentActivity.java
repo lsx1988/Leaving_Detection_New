@@ -33,6 +33,7 @@ public abstract class GeneralFragmentActivity extends AppCompatActivity {
             Log.d("activity", "Not null");
         }
 
+        //禁止转屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 }

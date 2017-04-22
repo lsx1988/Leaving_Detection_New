@@ -64,8 +64,8 @@ public class LoginFragment extends GeneralFragment {
      */
     @OnClick(R.id.username_register_button)
     public void register() {
-       if(getActivity() instanceof btnClickListener) {
-           ((btnClickListener) getActivity()).onRegisterClick();
+       if(getActivity() instanceof ActionListener) {
+           ((ActionListener) getActivity()).onRegisterClick();
        }
     }
 
@@ -114,8 +114,8 @@ public class LoginFragment extends GeneralFragment {
                 public void done(AVUser avUser, AVException e) {
                     if (e == null) {
                         // 注册成功，把用户对象赋值给当前用户 AVUser.getCurrentUser()
-                        if(getActivity() instanceof btnClickListener) {
-                            ((btnClickListener) getActivity()).onLoginSuccessful();
+                        if(getActivity() instanceof ActionListener) {
+                            ((ActionListener) getActivity()).onLoginSuccessful();
                         }
                     } else {
                         showProgress(false);

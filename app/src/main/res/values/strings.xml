@@ -22,4 +22,17 @@
     <string name="stop_run">Program stops</string>
     <string name="setting">Setting</string>
     <string name="profile">Profile</string>
+    <string name="welcome">WELCOME NEW USER</string>
+    <string name="comment_custom">You will define you own sensors</string>
+    <string name="comment_default">Only Wifi Scan must be open</string>
+    <string name="custom_model">Custom Model</string>
+    <string name="default_model">Default Model</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">CANCEL</string>
+    <string name="setting_model_title">MODEL</string>
+    <string name="setting_sensor_title">SENSOR</string>
+    <string name="setting_remodel_title">Re-MODEL</string>
+    <string name="remodel_start">START SENSING</string>
+    <string name="remodel_leaving">LEAVING HOME</string>
+    <string name="remodel_stop">STOP SENSING</string>
 </resources>

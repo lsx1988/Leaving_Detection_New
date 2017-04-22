@@ -9,4 +9,7 @@
     <color name="mainBackground">#66BB6A</color>
     <color name="normalTextColor">#FFF</color>
     <color name="btnBackground">#2E7D32</color>
+    <color name="welcome_text">#FFF</color>
+    <color name="welcome_background">#FF9800</color>
+    <color name="radio_color">#EF6C00</color>
 </resources>

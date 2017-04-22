@@ -15,10 +15,27 @@
            android:layout_marginBottom="8dp"
            android:visibility="gone"/>
 
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="@string/setting_sensor_title"
+           android:textSize="30dp"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="10dp"/>
+
+       <View
+           android:layout_width="match_parent"
+           android:layout_height="3px"
+           android:layout_marginTop="5dp"
+           android:background="#9E9E9E"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp">
+       </View>
+
        <LinearLayout
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           android:layout_marginTop="20dp"
+           android:layout_marginTop="10dp"
            android:layout_marginLeft="10dp"
            android:gravity="center_vertical">
 
@@ -26,11 +43,11 @@
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
                   android:layout_weight="1"
-                  android:text="Accelorator Meter"
-                  android:textSize="30dp"/>
+                  android:text="Pressure Meter"
+                  android:textSize="20dp"/>
 
               <com.kyleduo.switchbutton.SwitchButton
-                  android:id="@+id/switch_button_accel"
+                  android:id="@+id/switch_button_pressure"
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
                   android:layout_weight="0.2"
@@ -52,7 +69,7 @@
                   android:layout_height="wrap_content"
                   android:layout_weight="1"
                   android:text="Megnatic Meter"
-                  android:textSize="30dp"/>
+                  android:textSize="20dp"/>
 
               <com.kyleduo.switchbutton.SwitchButton
                   android:id="@+id/switch_button_megnatic"
@@ -77,7 +94,7 @@
                   android:layout_height="wrap_content"
                   android:layout_weight="1"
                   android:text="Wifi Scan"
-                  android:textSize="30dp"/>
+                  android:textSize="20dp"/>
 
               <com.kyleduo.switchbutton.SwitchButton
                   android:id="@+id/switch_button_wifi"
@@ -89,6 +106,74 @@
                   app:kswTextOff="Off"
                   app:kswTextOn="On"/>
        </LinearLayout>
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="@string/setting_model_title"
+           android:textSize="30dp"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="10dp"/>
+
+       <View
+           android:layout_width="match_parent"
+           android:layout_height="3px"
+           android:layout_marginTop="5dp"
+           android:background="#9E9E9E"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp">
+       </View>
+
+       <RadioGroup
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:gravity="center">
+              <RadioButton
+                  android:id="@+id/rb_custom_model"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/custom_model"
+                  android:buttonTint="@color/radio_color"/>
+
+              <RadioButton
+                  android:id="@+id/rb_default_model"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/default_model"
+                  android:layout_marginLeft="30dp"
+                  android:buttonTint="@color/radio_color"/>
+       </RadioGroup>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:gravity="center_vertical">
+
+              <TextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="@string/setting_remodel_title"
+                  android:textSize="30dp"
+                  android:layout_marginLeft="10dp"/>
+              <CheckBox
+                  android:id="@+id/setting_remodel"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.1"
+                  android:buttonTint="@color/radio_color"/>
+       </LinearLayout>
+
+       <View
+           android:layout_width="match_parent"
+           android:layout_height="3px"
+           android:layout_marginTop="5dp"
+           android:background="#9E9E9E"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp">
+       </View>
 
        <Button
            android:id="@+id/save_setting"

@@ -46,11 +46,11 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Accelorator:"
+            android:text="Pressure:"
             android:textSize="25dp"
             android:textColor="@color/normalTextColor"/>
         <TextView
-            android:id="@+id/profile_accel"
+            android:id="@+id/profile_pressure"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Private Model:"
+            android:text="Custom Model:"
             android:textSize="25dp"
             android:textColor="@color/normalTextColor"/>
         <TextView
@@ -154,7 +154,7 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Public Model:"
+            android:text="Default Model:"
             android:textSize="25dp"
             android:textColor="@color/normalTextColor"/>
         <TextView

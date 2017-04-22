@@ -19,12 +19,12 @@ public class ProfileFragment extends GeneralFragment {
     TextView mWifi;
     @BindView(R.id.profile_magnetic)
     TextView mMagnetic;
-    @BindView(R.id.profile_accel)
-    TextView mAccel;
+    @BindView(R.id.profile_pressure)
+    TextView mPressure;
     @BindView(R.id.profile_private_model)
-    TextView mPrivateModel;
+    TextView mCustomModel;
     @BindView(R.id.profile_public_model)
-    TextView mPublicModel;
+    TextView mDefaultModel;
 
     @Override
     protected int getLayoutID() {
@@ -43,10 +43,10 @@ public class ProfileFragment extends GeneralFragment {
 
         mUsername.setText(AVUser.getCurrentUser().getUsername());
 
-        if (AVUser.getCurrentUser().has("accel")) {
-            mAccel.setText(String.valueOf(AVUser.getCurrentUser().getBoolean("accel")));
+        if (AVUser.getCurrentUser().has("pressure")) {
+            mPressure.setText(String.valueOf(AVUser.getCurrentUser().getBoolean("pressure")));
         } else {
-            mAccel.setText("Not Valid");
+            mPressure.setText("Not Valid");
         }
 
         if (AVUser.getCurrentUser().has("magnetic")) {
@@ -59,6 +59,18 @@ public class ProfileFragment extends GeneralFragment {
             mWifi.setText(String.valueOf(AVUser.getCurrentUser().getBoolean("wifi")));
         } else {
             mWifi.setText("Not Valid");
+        }
+
+        if (AVUser.getCurrentUser().has("DefaultModel")) {
+            mDefaultModel.setText(String.valueOf(AVUser.getCurrentUser().getBoolean("DefaultModel")));
+        } else {
+            mDefaultModel.setText("Not Valid");
+        }
+
+        if (AVUser.getCurrentUser().has("CustomModel")) {
+            mCustomModel.setText(String.valueOf(AVUser.getCurrentUser().getBoolean("CustomModel")));
+        } else {
+            mCustomModel.setText("Not Valid");
         }
     }
 }

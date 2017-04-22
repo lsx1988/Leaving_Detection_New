@@ -19,15 +19,6 @@ import butterknife.ButterKnife;
 
 public class GeneralFragment extends Fragment {
 
-    public interface btnClickListener {
-        void onRegisterClick();
-        void onUpNevigationClick();
-        void onMenuClick();
-        void onLoginSuccessful();
-        void onSaveSettingSuccessful();
-        void onRegisterSuccessful();
-    }
-
     protected int getLayoutID(){
         return 0;
     }
@@ -57,8 +48,8 @@ public class GeneralFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(getActivity() instanceof btnClickListener) {
-            ((btnClickListener) getActivity()).onMenuClick();
+        if(getActivity() instanceof ActionListener) {
+            ((ActionListener) getActivity()).onMenuClick();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -87,8 +87,8 @@ public class RegisterFragment extends GeneralFragment {
                 public void done(AVException e) {
                     if (e == null) {
                         // 注册成功，把用户对象赋值给当前用户 AVUser.getCurrentUser()
-                        if(getActivity() instanceof btnClickListener) {
-                            ((btnClickListener) getActivity()).onRegisterSuccessful();
+                        if(getActivity() instanceof ActionListener) {
+                            ((ActionListener) getActivity()).onRegisterSuccessful();
                         }
                     } else {
                         // 失败的原因可能有多种，常见的是用户名已经存在。
@@ -147,8 +147,8 @@ public class RegisterFragment extends GeneralFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(getActivity() instanceof btnClickListener) {
-                ((btnClickListener) getActivity()).onUpNevigationClick();
+                if(getActivity() instanceof ActionListener) {
+                ((ActionListener) getActivity()).onUpNevigationClick();
             }
             return true;
         }

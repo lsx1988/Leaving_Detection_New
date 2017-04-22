@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.shixun.android.leaving_detection.Detection.MessageEvent;
 import com.shixun.android.leaving_detection.Detection.MessageStatus;
-import com.shixun.android.leaving_detection.Detection.MyService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -60,7 +59,6 @@ public class MainFragment extends GeneralFragment {
         EventBus.getDefault().register(this);
         LitePal.initialize(getActivity());
         vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
-        showPressureSelection();
         super.onResume();
     }
 
@@ -71,11 +69,11 @@ public class MainFragment extends GeneralFragment {
      */
 
     @OnClick(R.id.start_detection) void start() {
+        if(getActivity() instanceof ActionListener) {
+            ((ActionListener) getActivity()).startDetection(false);
+        }
         showProgressBar();
-        serviceIntent = new Intent(getActivity(), MyService.class);
-        serviceIntent.putExtra("usePressure", isPressureOnCheckBox.isChecked());
         mStatusTextView.setText("Initializing");
-        getActivity().startService(serviceIntent);
     }
 
     /**
@@ -84,10 +82,12 @@ public class MainFragment extends GeneralFragment {
      */
 
     @OnClick(R.id.stop_detection) void stop() {
-        stopService(serviceIntent);
-        showPressureSelection();
+        if(getActivity() instanceof ActionListener) {
+            ((ActionListener) getActivity()).stopDetection();
+        }
+
         mStatusTextView.setText("");
-        mStatusTextView.setBackgroundColor(ContextCompat.getColor(this, R.color.notWalking));
+        mStatusTextView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.notWalking));
     }
 
     /**
@@ -95,7 +95,7 @@ public class MainFragment extends GeneralFragment {
      */
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -114,10 +114,10 @@ public class MainFragment extends GeneralFragment {
     public void onMessageStatus(MessageStatus event) {
         boolean status = event.isWalking();
         if (status == true) {
-            mStatusTextView.setBackgroundColor(ContextCompat.getColor(this, R.color.isWalking));
+            mStatusTextView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.isWalking));
             mStatusTextView.setText("You are walking");
         } else {
-            mStatusTextView.setBackgroundColor(ContextCompat.getColor(this, R.color.notWalking));
+            mStatusTextView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.notWalking));
             mStatusTextView.setText("Not walking");
         }
     }
@@ -161,14 +161,6 @@ public class MainFragment extends GeneralFragment {
                 stayOutside = false;
             }
         }
-    }
-
-    private void showPressureSelection() {
-        mProgressBar.setVisibility(View.GONE);
-        mWifiLevelTextView.setVisibility(View.GONE);
-        mPressureTextView.setVisibility(View.GONE);
-        mPossibilityTextView.setVisibility(View.GONE);
-        isPressureOnCheckBox.setVisibility(View.VISIBLE);
     }
 
     private void showProgressBar() {
