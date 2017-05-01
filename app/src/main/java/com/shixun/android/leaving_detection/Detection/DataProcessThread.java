@@ -102,7 +102,7 @@ public class DataProcessThread implements Runnable {
 
             model = new BufferedReader(new InputStreamReader(modelFile));
             try {
-                String scale_result = svm_scale.main(blank_scale, str, isPressureExit, mContext);
+                String scale_result = svm_scale_self.main(blank_scale, str, isPressureExit, mContext);
                 Log.d(TAG, scale_result);
                 result = predict.main(blank, scale_result, model);
 

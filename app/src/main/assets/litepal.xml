@@ -34,6 +34,7 @@
     <list>
         <mapping class="com.shixun.android.leaving_detection.Detection.WifiData"></mapping>
         <mapping class="com.shixun.android.leaving_detection.Detection.PressureData"></mapping>
+        <mapping class="com.shixun.android.leaving_detection.Detection.MagneticData"></mapping>
 
     </list>
 

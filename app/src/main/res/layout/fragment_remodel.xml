@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/mainBackground">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/remodel_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/remodel_start"/>
+        <Button
+            android:id="@+id/remodel_leaving"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/remodel_leaving"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/remodel_stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/remodel_stop"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+</LinearLayout>
