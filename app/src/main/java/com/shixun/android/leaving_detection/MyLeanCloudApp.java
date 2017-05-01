@@ -10,7 +10,7 @@ import org.litepal.LitePal;
  * Created by shixunliu on 10/4/17.
  */
 
-public class MyLeanCloudApp extends Application {
+public class MyLeanCloudApp  extends Application {
 
     @Override
     public void onCreate() {

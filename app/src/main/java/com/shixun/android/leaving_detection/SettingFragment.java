@@ -19,7 +19,9 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.SaveCallback;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -79,18 +81,25 @@ public class SettingFragment extends GeneralFragment implements
     @OnClick(R.id.save_setting)
     public void saveSetting() {
         showProgress(true);
-
-        if(mRemodel.isChecked()){
-            if(getActivity() instanceof ActionListener) {
-                ((ActionListener) getActivity()).onRemodel();
-                saveUserInfo();
+        AVUser.getCurrentUser().put("pressure", mPressure.isChecked());
+        AVUser.getCurrentUser().put("magnetic", mMegnatic.isChecked());
+        AVUser.getCurrentUser().put("wifi", mWifi.isChecked());
+        AVUser.getCurrentUser().put("DefaultModel", mDefaultModel.isChecked());
+        AVUser.getCurrentUser().put("CustomModel", mCustomModel.isChecked());
+        AVUser.getCurrentUser().saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(mRemodel.isChecked()){
+                    if(getActivity() instanceof ActionListener) {
+                        ((ActionListener) getActivity()).onRemodel();
+                    }
+                } else {
+                    if(getActivity() instanceof ActionListener) {
+                        ((ActionListener) getActivity()).onDetection();
+                    }
+                }
             }
-        } else if(!mRemodel.isChecked()) {
-            if(getActivity() instanceof ActionListener) {
-                ((ActionListener) getActivity()).onDetection();
-                saveUserInfo();
-            }
-        }
+        });
     }
 
     private boolean checkSensor(int id) {
@@ -265,14 +274,5 @@ public class SettingFragment extends GeneralFragment implements
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mSettingFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
-    }
-
-    private void saveUserInfo() {
-        AVUser.getCurrentUser().put("pressure", mPressure.isChecked());
-        AVUser.getCurrentUser().put("magnetic", mMegnatic.isChecked());
-        AVUser.getCurrentUser().put("wifi", mWifi.isChecked());
-        AVUser.getCurrentUser().put("DefaultModel", mDefaultModel.isChecked());
-        AVUser.getCurrentUser().put("CustomModel", mCustomModel.isChecked());
-        AVUser.getCurrentUser().saveInBackground();
     }
 }

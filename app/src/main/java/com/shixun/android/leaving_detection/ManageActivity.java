@@ -162,7 +162,7 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
      */
     @Override
     public void onRemodel() {
-        nevigateToFragment(RemodelFragment.class, true, null);
+        nevigateToFragment(RemodelFragment.class, false, null);
     }
 
     /**
@@ -179,11 +179,14 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
      * 响应start detection
      */
     @Override
-    public void startDetection() {
+    public void startDetection(boolean isRemodel) {
         checkSensor();//检测用户设置的 sensor
         //开启 service
         mServiceIntent = new Intent(this, MyService.class);
-        mServiceIntent.putExtra("usePressure", isPressureOn);
+        mServiceIntent.putExtra("isPressureOn", isPressureOn);
+        mServiceIntent.putExtra("isMagneticOn", isMagneticOn);
+        mServiceIntent.putExtra("isWifiScanOn", isWifiScanOn);
+        mServiceIntent.putExtra("isRemodel", isRemodel);
         this.startService(mServiceIntent);
     }
 
@@ -313,6 +316,7 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
     @Override
     protected void onDestroy() {
         getCurrentUser().logOut();
+        stopService(mServiceIntent);
         super.onDestroy();
     }
 }

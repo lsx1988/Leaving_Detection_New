@@ -1,14 +1,20 @@
 package com.shixun.android.leaving_detection.Detection;
 
+import android.content.Context;
+
+import com.shixun.android.leaving_detection.R;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Formatter;
 import java.util.StringTokenizer;
 
-public class svm_scale
+public class svm_scale_self
 {
 	private String line = null;
 	private double lower = -1.0;
@@ -23,6 +29,13 @@ public class svm_scale
 	private int max_index;
 	private long num_nonzeros = 0;
 	private long new_num_nonzeros = 0;
+	private BufferedReader scalePara;
+	private String scale_result = "";
+	private Context context;
+
+	public svm_scale_self(Context context) {
+		this.context = context;
+	}
 
 	private static void exit_with_help()
 	{
@@ -57,7 +70,9 @@ public class svm_scale
 				(value-y_min) / (y_max-y_min);
 		}
 
-		System.out.print(value + " ");
+		scale_result = scale_result + String.valueOf(value) + " ";
+
+		//System.out.print(value + " ");
 	}
 
 	private void output(int index, double value)
@@ -77,8 +92,9 @@ public class svm_scale
 
 		if(value != 0)
 		{
-			System.out.print(index + ":" + value + " ");
+			//System.out.print(index + ":" + value + " ");
 			new_num_nonzeros++;
+			scale_result = scale_result + String.valueOf(index) + ":" + String.valueOf(value) + " ";
 		}
 	}
 
@@ -88,7 +104,7 @@ public class svm_scale
 		return line;
 	}
 
-	private void run(String []argv) throws IOException
+	private String run(String []argv, String data, boolean isPressureExit) throws IOException
 	{
 		int i,index;
 		BufferedReader fp = null, fp_restore = null;
@@ -134,12 +150,12 @@ public class svm_scale
 			exit_with_help();
 
 		data_filename = argv[i];
-		try {
-			fp = new BufferedReader(new FileReader(data_filename));
-		} catch (Exception e) {
-			System.err.println("can't open file " + data_filename);
-			System.exit(1);
-		}
+//		try {
+//			fp = new BufferedReader(new FileReader(data_filename));
+//		} catch (Exception e) {
+//			System.err.println("can't open file " + data_filename);
+//			System.exit(1);
+//		}
 
 		/* assumption: min index of attributes is 1 */
 		/* pass 1: find out max index of attributes */
@@ -150,7 +166,15 @@ public class svm_scale
 			int idx, c;
 
 			try {
-				fp_restore = new BufferedReader(new FileReader(restore_filename));
+				//fp_restore = new BufferedReader(new FileReader(restore_filename));
+				if(isPressureExit == true){
+					InputStream scaleParaFile = context.getResources().openRawResource(R.raw.scale_para);
+					scalePara = new BufferedReader(new InputStreamReader(scaleParaFile));
+				} else {
+					InputStream scaleParaFile = context.getResources().openRawResource(R.raw.scale_para);
+					scalePara = new BufferedReader(new InputStreamReader(scaleParaFile));
+				}
+				fp_restore = scalePara;
 			}
 			catch (Exception e) {
 				System.err.println("can't open file " + restore_filename);
@@ -172,12 +196,22 @@ public class svm_scale
 				idx = Integer.parseInt(st2.nextToken());
 				max_index = Math.max(max_index, idx);
 			}
-			fp_restore = rewind(fp_restore, restore_filename);
+			//fp_restore = rewind(fp_restore, restore_filename);
+			fp_restore.close();
+			if(isPressureExit == true){
+				InputStream scaleParaFile = context.getResources().openRawResource(R.raw.scale_para);
+				scalePara = new BufferedReader(new InputStreamReader(scaleParaFile));
+			} else {
+				InputStream scaleParaFile = context.getResources().openRawResource(R.raw.scale_para);
+				scalePara = new BufferedReader(new InputStreamReader(scaleParaFile));
+			}
+			fp_restore = scalePara;
 		}
 
-		while (readline(fp) != null)
-		{
-			StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+		//while (readline(fp) != null)
+		//{
+			//StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+			StringTokenizer st = new StringTokenizer(data," \t\n\r\f:");
 			st.nextToken();
 			while(st.hasMoreTokens())
 			{
@@ -186,7 +220,7 @@ public class svm_scale
 				st.nextToken();
 				num_nonzeros++;
 			}
-		}
+		//}
 
 		try {
 			feature_max = new double[(max_index+1)];
@@ -202,16 +236,16 @@ public class svm_scale
 			feature_min[i] = Double.MAX_VALUE;
 		}
 
-		fp = rewind(fp, data_filename);
+		//fp = rewind(fp, data_filename);
 
 		/* pass 2: find out min/max value */
-		while(readline(fp) != null)
-		{
+		//while(readline(fp) != null)
+		//{
 			int next_index = 1;
 			double target;
 			double value;
 
-			StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+			st = new StringTokenizer(data," \t\n\r\f:");
 			target = Double.parseDouble(st.nextToken());
 			y_max = Math.max(y_max, target);
 			y_min = Math.min(y_min, target);
@@ -237,9 +271,9 @@ public class svm_scale
 				feature_max[i] = Math.max(feature_max[i], 0);
 				feature_min[i] = Math.min(feature_min[i], 0);
 			}
-		}
+		//}
 
-		fp = rewind(fp, data_filename);
+		//fp = rewind(fp, data_filename);
 
 		/* pass 2.5: save/restore feature_min/feature_max */
 		if(restore_filename != null)
@@ -252,7 +286,7 @@ public class svm_scale
 			if((c = fp_restore.read()) == 'y')
 			{
 				fp_restore.readLine();		// pass the '\n' after 'y'
-				StringTokenizer st = new StringTokenizer(fp_restore.readLine());
+				st = new StringTokenizer(fp_restore.readLine());
 				y_lower = Double.parseDouble(st.nextToken());
 				y_upper = Double.parseDouble(st.nextToken());
 				st = new StringTokenizer(fp_restore.readLine());
@@ -265,7 +299,7 @@ public class svm_scale
 
 			if(fp_restore.read() == 'x') {
 				fp_restore.readLine();		// pass the '\n' after 'x'
-				StringTokenizer st = new StringTokenizer(fp_restore.readLine());
+				st = new StringTokenizer(fp_restore.readLine());
 				lower = Double.parseDouble(st.nextToken());
 				upper = Double.parseDouble(st.nextToken());
 				String restore_line = null;
@@ -315,13 +349,13 @@ public class svm_scale
 		}
 
 		/* pass 3: scale */
-		while(readline(fp) != null)
-		{
-			int next_index = 1;
-			double target;
-			double value;
+		//while(readline(fp) != null)
+		//{
+			next_index = 1;
+			//double target;
+			//double value;
 
-			StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
+			st = new StringTokenizer(data," \t\n\r\f:");
 			target = Double.parseDouble(st.nextToken());
 			output_target(target);
 			while(st.hasMoreElements())
@@ -336,20 +370,21 @@ public class svm_scale
 
 			for(i=next_index;i<= max_index;i++)
 				output(i, 0);
-			System.out.print("\n");
-		}
+			//System.out.print("\n");
+		//}
 		if (new_num_nonzeros > num_nonzeros)
 			System.err.print(
 			 "WARNING: original #nonzeros " + num_nonzeros+"\n"
 			+"         new      #nonzeros " + new_num_nonzeros+"\n"
 			+"Use -l 0 if many original feature values are zeros\n");
 
-		fp.close();
+		//fp.close();
+		return scale_result;
 	}
 
-	public static void main(String argv[]) throws IOException
+	public static String main(String argv[], String data, boolean isPressureExit, Context context) throws IOException
 	{
-		svm_scale s = new svm_scale();
-		s.run(argv);
+		svm_scale_self s = new svm_scale_self(context);
+		return s.run(argv,data,isPressureExit);
 	}
 }

@@ -81,4 +81,6 @@ dependencies {
     compile 'com.specyci:residemenu:1.6+'
 
     compile 'com.kyleduo.switchbutton:library:1.4.5'
+
+    compile 'com.idescout.sql:sqlscout-server:2.0'
 }
