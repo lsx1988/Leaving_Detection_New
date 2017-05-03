@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/file_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.6"
+        tools:text="this is the file"
+        android:layout_gravity="center"
+        android:textSize="20dp"/>
+    <ImageView
+        android:id="@+id/delete"
+        android:src="@drawable/icon_delete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:cropToPadding="false"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription"
+        android:layout_marginRight="10dp"/>
+    <ImageView
+        android:id="@+id/start_train"
+        android:src="@drawable/icon_train_model"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:cropToPadding="false"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription"
+        android:layout_marginRight="10dp"/>
+
+</LinearLayout>

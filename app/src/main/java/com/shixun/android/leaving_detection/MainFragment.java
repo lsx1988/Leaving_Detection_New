@@ -3,6 +3,7 @@ package com.shixun.android.leaving_detection;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -24,9 +25,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.crud.DataSupport;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -145,9 +146,16 @@ public class MainFragment extends GeneralFragment {
 
         try {
             String scale_result = svm_scale_self.main(blank_scale, str, false, getContext());
-            InputStream modelFile = getResources().openRawResource(R.raw.model);
-            BufferedReader model = new BufferedReader(new InputStreamReader(modelFile));
-            result = svm_predict.main(blank, scale_result, model);
+            // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+                // 获得SD卡的根目录
+                File sdCardPath = Environment.getExternalStorageDirectory();
+
+                File file = new File(sdCardPath + File.separator + "Model_trained" + "/model.txt");
+                BufferedReader model = new BufferedReader(new FileReader(file));
+                result = svm_predict.main(blank, scale_result, model);
+            }
             return result;
         } catch (IOException e) {
             return null;

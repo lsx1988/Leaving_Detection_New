@@ -8,7 +8,6 @@ import org.litepal.crud.DataSupport;
 
 public class WifiData extends DataSupport{
 
-
     private int id;
 
     private Double homeWifiLevel;
@@ -18,6 +17,8 @@ public class WifiData extends DataSupport{
     private Double stdOfAllWifiLevel;
 
     private Double isHomeWifi;
+
+    private Double meanOfHomeWifi;
 
     public Double getHomeWifiLevel() {
         return homeWifiLevel;
@@ -49,6 +50,14 @@ public class WifiData extends DataSupport{
 
     public void setIsHomeWifi(Double isHomeWifi) {
         this.isHomeWifi = isHomeWifi;
+    }
+
+    public Double getMeanOfHomeWifi() {
+        return meanOfHomeWifi;
+    }
+
+    public void setMeanOfHomeWifi(Double meanOfHomeWifi) {
+        this.meanOfHomeWifi = meanOfHomeWifi;
     }
 
     public int getId() {

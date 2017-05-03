@@ -1,6 +1,9 @@
 package com.shixun.android.leaving_detection.Detection;
 
+import android.os.Environment;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -13,7 +16,7 @@ import libsvm.svm_parameter;
 import libsvm.svm_print_interface;
 import libsvm.svm_problem;
 
-class svm_train {
+public class svm_train {
 	private svm_parameter param;		// set by parse_command_line
 	private svm_problem prob;		// set by read_problem
 	private svm_model model;
@@ -100,10 +103,10 @@ class svm_train {
 		}
 	}
 	
-	private void run(String argv[]) throws IOException
+	private void run(String argv[], File file) throws IOException
 	{
 		parse_command_line(argv);
-		read_problem();
+		read_problem(file);
 		error_msg = svm.svm_check_parameter(prob,param);
 
 		if(error_msg != null)
@@ -119,14 +122,15 @@ class svm_train {
 		else
 		{
 			model = svm.svm_train(prob,param);
-			svm.svm_save_model(model_file_name,model);
+			//svm.svm_save_model(model_file_name,model);
+			saveModelFile(model);
 		}
 	}
 
-	public static void main(String argv[]) throws IOException
+	public static void main(String argv[], File file) throws IOException
 	{
 		svm_train t = new svm_train();
-		t.run(argv);
+		t.run(argv, file);
 	}
 
 	private static double atof(String s)
@@ -173,8 +177,9 @@ class svm_train {
 		for(i=0;i<argv.length;i++)
 		{
 			if(argv[i].charAt(0) != '-') break;
-			if(++i>=argv.length)
-				exit_with_help();
+//			if(++i>=argv.length)
+//				exit_with_help();
+			i++;
 			switch(argv[i-1].charAt(1))
 			{
 				case 's':
@@ -253,26 +258,26 @@ class svm_train {
 
 		// determine filenames
 
-		if(i>=argv.length)
-			exit_with_help();
+//		if(i>=argv.length)
+//			exit_with_help();
 
-		input_file_name = argv[i];
+		//input_file_name = argv[i];
 
-		if(i<argv.length-1)
-			model_file_name = argv[i+1];
-		else
-		{
-			int p = argv[i].lastIndexOf('/');
-			++p;	// whew...
-			model_file_name = argv[i].substring(p)+".model";
-		}
+//		if(i<argv.length-1)
+//			model_file_name = argv[i+1];
+//		else
+//		{
+//			int p = argv[i].lastIndexOf('/');
+//			++p;	// whew...
+//			model_file_name = argv[i].substring(p)+".model";
+//		}
 	}
 
 	// read in a problem (in svmlight format)
 
-	private void read_problem() throws IOException
+	private void read_problem(File file) throws IOException
 	{
-		BufferedReader fp = new BufferedReader(new FileReader(input_file_name));
+		BufferedReader fp = new BufferedReader(new FileReader(file));
 		Vector<Double> vy = new Vector<Double>();
 		Vector<svm_node[]> vx = new Vector<svm_node[]>();
 		int max_index = 0;
@@ -325,5 +330,26 @@ class svm_train {
 			}
 
 		fp.close();
+	}
+
+	private void saveModelFile(svm_model model) throws IOException{
+
+		// 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
+		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+			// 获得SD卡的根目录
+			File sdCardPath = Environment.getExternalStorageDirectory();
+
+			// 在 SD 卡的根目录下创建文件夹
+			File folder = new File(sdCardPath + File.separator + "Model_trained");
+
+			if (!folder.exists()) {
+				folder.mkdir();
+			}
+
+			File file = new File(folder, "/model.txt");
+
+			svm.svm_save_model(file.toString(),model);
+		}
 	}
 }

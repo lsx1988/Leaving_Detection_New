@@ -27,4 +27,11 @@
 
     </FrameLayout>
 
+    <com.victor.loading.newton.NewtonCradleLoading
+        android:id="@+id/newton_cradle_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
 </LinearLayout>

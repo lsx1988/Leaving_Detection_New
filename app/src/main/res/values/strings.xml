@@ -35,4 +35,6 @@
     <string name="remodel_start">START SENSING</string>
     <string name="remodel_leaving">LEAVING HOME</string>
     <string name="remodel_stop">STOP SENSING</string>
+    <string name="file_save_success">Do You Want To Train Model Right Now?</string>
+    <string name="filelist">File List</string>
 </resources>

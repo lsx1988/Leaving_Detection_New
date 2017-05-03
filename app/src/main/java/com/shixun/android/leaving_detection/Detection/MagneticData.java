@@ -9,6 +9,7 @@ import org.litepal.crud.DataSupport;
 public class MagneticData extends DataSupport {
 
     private double magnetic;
+    private double meanOfMagnetic;
     private int id;
 
     public double getMagnetic() {
@@ -17,6 +18,14 @@ public class MagneticData extends DataSupport {
 
     public void setMagnetic(double magnetic) {
         this.magnetic = magnetic;
+    }
+
+    public double getMeanOfMagnetic() {
+        return meanOfMagnetic;
+    }
+
+    public void setMeanOfMagnetic(double meanOfMagnetic) {
+        this.meanOfMagnetic = meanOfMagnetic;
     }
 
     public int getId() {
