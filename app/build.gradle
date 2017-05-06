@@ -15,7 +15,16 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        jackOptions {
+            enabled true
+        }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -83,4 +92,7 @@ dependencies {
     compile 'com.kyleduo.switchbutton:library:1.4.5'
 
     compile 'com.idescout.sql:sqlscout-server:2.0'
+
+    // loading 动画
+    compile 'com.victor:lib:1.0.4'
 }

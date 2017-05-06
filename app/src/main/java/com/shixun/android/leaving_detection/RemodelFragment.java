@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -40,6 +42,8 @@ public class RemodelFragment extends GeneralFragment {
     Button mLeaving;
     @BindView(R.id.remodel_stop)
     Button mStop;
+    @BindView(R.id.newton_cradle_loading)
+    com.victor.loading.newton.NewtonCradleLoading loading;
 
     String label = "0";
     String rawData = "";
@@ -60,13 +64,14 @@ public class RemodelFragment extends GeneralFragment {
 
     @OnClick(R.id.remodel_start)
     public void start() {
-        deleteFile("sensorCollection.txt");
         if(getActivity() instanceof ActionListener) {
             ((ActionListener) getActivity()).startDetection(true);
         }
         mStart.setVisibility(View.GONE);
         mLeaving.setVisibility(View.VISIBLE);
-    }
+        loading.setVisibility(View.VISIBLE);
+        loading.start();
+}
 
     @OnClick(R.id.remodel_leaving)
     public void leaving() {
@@ -78,10 +83,22 @@ public class RemodelFragment extends GeneralFragment {
     @OnClick(R.id.remodel_stop)
     public void stop() {
 
-        writeFiles(rawData, "sensorCollection.txt");
+        Calendar c = Calendar.getInstance();
+
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(c.getTime());
+
+        writeFiles(rawData, currentDate + ".txt");
+
         if(getActivity() instanceof ActionListener) {
             ((ActionListener) getActivity()).stopDetection();
         }
+
+        if(getActivity() instanceof ActionListener) {
+            ((ActionListener) getActivity()).onCollectSensorDataSuccessful();
+        }
+        loading.stop();
+        loading.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -104,15 +121,21 @@ public class RemodelFragment extends GeneralFragment {
 
         // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            Log.d(TAG, "SD卡");
 
             // 获得SD卡的根目录
             File sdCardPath = Environment.getExternalStorageDirectory();
-            Log.d(TAG, sdCardPath.toString());
+
+            // 在 SD 卡的根目录下创建文件夹
+            File folder =  new File(sdCardPath + File.separator + "Sensor_Data");
+
+            if(!folder.exists()) {
+                folder.mkdir();
+            }
+
         /*
         * 文件输出操作
         * */
-            File testFile = new File(sdCardPath, fileName);
+            File testFile = new File(folder, fileName);
             // 初始化文件输出流
             FileOutputStream fileOutputStream = null;
             // 以追加模式打开文件输出流
@@ -143,28 +166,6 @@ public class RemodelFragment extends GeneralFragment {
                 e.printStackTrace();
             }catch (IOException e) {
                 e.printStackTrace();
-            }
-        }
-    }
-
-    public void deleteFile(String fileName) {
-        // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-
-            // 获得SD卡的根目录
-            File sdCardPath = Environment.getExternalStorageDirectory();
-        /*
-        * 文件输出操作
-        * */
-            File testFile = new File(sdCardPath, fileName);
-
-            if(testFile.exists()) {
-                testFile.delete();
-            }
-        } else {
-            File file = new File(fileName);
-            if(file.exists()) {
-                file.delete();
             }
         }
     }

@@ -1,7 +1,12 @@
 package com.shixun.android.leaving_detection.Detection;
 
+import android.os.Environment;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -77,7 +82,8 @@ public class svm_scale
 
 		if(value != 0)
 		{
-			System.out.print(index + ":" + value + " ");
+			saveTrainScaledFile(index + ":" + value + " ");
+
 			new_num_nonzeros++;
 		}
 	}
@@ -88,7 +94,7 @@ public class svm_scale
 		return line;
 	}
 
-	private void run(String []argv) throws IOException
+	private void run(String []argv,  File dataFile) throws IOException
 	{
 		int i,index;
 		BufferedReader fp = null, fp_restore = null;
@@ -130,12 +136,13 @@ public class svm_scale
 			System.exit(1);
 		}
 
-		if(argv.length != i+1)
-			exit_with_help();
+//		if(argv.length != i+1)
+//			exit_with_help();
 
-		data_filename = argv[i];
+		//data_filename = argv[i];
 		try {
-			fp = new BufferedReader(new FileReader(data_filename));
+			//fp = new BufferedReader(new FileReader(data_filename));
+			fp = new BufferedReader(new FileReader(dataFile));
 		} catch (Exception e) {
 			System.err.println("can't open file " + data_filename);
 			System.exit(1);
@@ -202,7 +209,9 @@ public class svm_scale
 			feature_min[i] = Double.MAX_VALUE;
 		}
 
-		fp = rewind(fp, data_filename);
+		fp.close();
+		fp = new BufferedReader(new FileReader(dataFile));
+		//fp = rewind(fp, data_filename);
 
 		/* pass 2: find out min/max value */
 		while(readline(fp) != null)
@@ -239,7 +248,9 @@ public class svm_scale
 			}
 		}
 
-		fp = rewind(fp, data_filename);
+		fp.close();
+		fp = new BufferedReader(new FileReader(dataFile));
+		//fp = rewind(fp, data_filename);
 
 		/* pass 2.5: save/restore feature_min/feature_max */
 		if(restore_filename != null)
@@ -318,12 +329,14 @@ public class svm_scale
 		while(readline(fp) != null)
 		{
 			int next_index = 1;
-			double target;
+			String target;
 			double value;
 
 			StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
-			target = Double.parseDouble(st.nextToken());
-			output_target(target);
+			target = (String) st.nextElement();
+			saveTrainScaledFile(target + " ");
+//			target = Double.parseDouble(st.nextToken());
+//			output_target(target);
 			while(st.hasMoreElements())
 			{
 				index = Integer.parseInt(st.nextToken());
@@ -336,7 +349,8 @@ public class svm_scale
 
 			for(i=next_index;i<= max_index;i++)
 				output(i, 0);
-			System.out.print("\n");
+
+			saveTrainScaledFile("\n");
 		}
 		if (new_num_nonzeros > num_nonzeros)
 			System.err.print(
@@ -347,9 +361,42 @@ public class svm_scale
 		fp.close();
 	}
 
-	public static void main(String argv[]) throws IOException
+	public static void main(String argv[], File dataFile) throws IOException
 	{
 		svm_scale s = new svm_scale();
-		s.run(argv);
+		s.run(argv, dataFile);
+	}
+
+	private void saveTrainScaledFile(String content) {
+
+		// 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
+		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+			// 获得SD卡的根目录
+			File sdCardPath = Environment.getExternalStorageDirectory();
+
+			// 在 SD 卡的根目录下创建文件夹
+			File folder = new File(sdCardPath + File.separator + "Data_Scaled");
+
+			if (!folder.exists()) {
+				folder.mkdir();
+			}
+
+			File file = new File(folder, "/train_scaled.txt");
+
+			// 初始化文件输出流
+			FileOutputStream fileOutputStream = null;
+			// 以追加模式打开文件输出流
+			try {
+				fileOutputStream = new FileOutputStream(file, true);
+				fileOutputStream.write(content.getBytes());
+				fileOutputStream.close();
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

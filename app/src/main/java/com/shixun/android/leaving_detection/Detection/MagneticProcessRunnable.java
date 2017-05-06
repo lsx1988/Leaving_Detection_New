@@ -22,37 +22,38 @@ public class MagneticProcessRunnable implements Runnable{
 
     @Override
     public void run() {
-        MagneticData magneticData = new MagneticData();
+        MagneticData sample = new MagneticData();
 
         double sum = 0;
         for (Double data : magneticDataList) {
             sum += data.doubleValue();
         }
 
-        magneticData.setMagnetic(sum / magneticDataList.size());
+        double currentMag = sum / magneticDataList.size();
 
-        magneticData.saveThrows();
+        sample.setMagnetic(currentMag);
+
+        if(DataSupport.count(MagneticData.class) == 0){
+            sample.setMeanOfMagnetic(currentMag);
+        } else {
+            sample.setMeanOfMagnetic(getMean("magnetic", MagneticData.class));
+        }
+
+        sample.saveThrows();
 
         magneticDataList.clear();
 
         if (DataSupport.count(MagneticData.class) >= dataSize) {
 
-            strArray[2] = (" 24:" + getMean("magnetic", MagneticData.class)
-                    + " 25:" + getVar("magnetic")
-                    + " 26:" + getEnergy("magnetic"))
-                    + " 27:" + getDiff("magnetic");
+            strArray[2] = (" 60:" + getMean("magnetic", MagneticData.class)
+                    + " 61:" + getVar("meanOfMagnetic")
+                    + " 62:" + getEnergy("meanOfMagnetic"))
+                    + " 63:" + getDiff("meanOfMagnetic");
             //删除一组数据
             int id = DataSupport.findFirst(MagneticData.class).getId();
             DataSupport.delete(MagneticData.class, id);
         }
     }
-
-    /**
-     *
-     * @param col
-     * @param className
-     * @return
-     */
 
     private double getMean(String col, Class className) {
         double mean = DataSupport.average(className, col);
@@ -66,7 +67,7 @@ public class MagneticProcessRunnable implements Runnable{
         List<MagneticData> temp = DataSupport.select(col).find(MagneticData.class);
         double sum = 0;
         for (int i = 0; i < temp.size(); i++) {
-            sum += Math.pow(temp.get(i).getMagnetic(),2);
+            sum += Math.pow(temp.get(i).getMeanOfMagnetic(),2);
         }
 
         return (sum - count * Math.pow(mean,2)) / (count - 1);
@@ -77,14 +78,19 @@ public class MagneticProcessRunnable implements Runnable{
         List<MagneticData> temp = DataSupport.select(col).find(MagneticData.class);
         double sum = 0;
         for (int i = 0; i < temp.size(); i++) {
-            sum += Math.pow(temp.get(i).getMagnetic(),2);
+            sum += Math.pow(temp.get(i).getMeanOfMagnetic(),2);
         }
         return sum / count;
     }
 
     private double getDiff(String col) {
-        double first = DataSupport.findFirst(MagneticData.class).getMagnetic();
-        double last = DataSupport.select(col).order("id desc").limit(1).find(MagneticData.class).get(0).getMagnetic();
-        return Math.abs(last-first);
+
+        List<MagneticData> lastSet;
+        lastSet = DataSupport.select(col).order("id desc").limit(5).find(MagneticData.class);
+
+        double max = lastSet.get(0).getMeanOfMagnetic();
+        double min = lastSet.get(4).getMeanOfMagnetic();
+
+        return max - min;
     }
 }

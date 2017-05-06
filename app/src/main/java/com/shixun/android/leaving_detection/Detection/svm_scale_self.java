@@ -1,11 +1,13 @@
 package com.shixun.android.leaving_detection.Detection;
 
 import android.content.Context;
+import android.os.Environment;
 
 import com.shixun.android.leaving_detection.R;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -98,8 +100,7 @@ public class svm_scale_self
 		}
 	}
 
-	private String readline(BufferedReader fp) throws IOException
-	{
+	private String readline(BufferedReader fp) throws IOException {
 		line = fp.readLine();
 		return line;
 	}
@@ -198,12 +199,16 @@ public class svm_scale_self
 			}
 			//fp_restore = rewind(fp_restore, restore_filename);
 			fp_restore.close();
-			if(isPressureExit == true){
-				InputStream scaleParaFile = context.getResources().openRawResource(R.raw.scale_para);
-				scalePara = new BufferedReader(new InputStreamReader(scaleParaFile));
-			} else {
-				InputStream scaleParaFile = context.getResources().openRawResource(R.raw.scale_para);
-				scalePara = new BufferedReader(new InputStreamReader(scaleParaFile));
+			// 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
+			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+				// 获得SD卡的根目录
+				File sdCardPath = Environment.getExternalStorageDirectory();
+
+				File file = new File(sdCardPath + File.separator + "Scale_Para" + "/scale_para.txt");
+
+				scalePara = new BufferedReader(new FileReader(file));
+
 			}
 			fp_restore = scalePara;
 		}
