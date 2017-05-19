@@ -5,32 +5,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/mainBackground">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_user"/>
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/username"
-            android:textSize="25dp"
-            android:textColor="@color/normalTextColor"/>
-        <TextView
-            android:id="@+id/profile_username"
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@string/username"
-            android:textSize="25dp"
-            android:textColor="@color/normalTextColor"/>
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -78,6 +52,33 @@
             android:textColor="@color/normalTextColor"/>
         <TextView
             android:id="@+id/profile_magnetic"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/username"
+            android:textSize="25dp"
+            android:textColor="@color/normalTextColor"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_temperature"/>
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temperature:"
+            android:textSize="25dp"
+            android:textColor="@color/normalTextColor"/>
+        <TextView
+            android:id="@+id/profile_temperature"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -17,4 +17,14 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="BottomSheet.StyleDialog" parent="BottomSheet.Dialog">
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:windowAnimationStyle">@style/BottomSheet.Animation</item>
+        <item name="android:textColorPrimary">#DDffffff</item>
+        <item name="android:textColorSecondary">@color/mainBackground</item>
+        <item name="android:textColorHint">@color/mainBackground</item>
+        <item name="bs_dialogBackground">#212121</item>
+        <item name="bs_numColumns">4</item>
+    </style>
+
 </resources>

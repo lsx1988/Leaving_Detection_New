@@ -37,15 +37,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".Activity.CollapseActivity"
+            android:theme="@android:style/Theme.Holo.Dialog.MinWidth" >
+        </activity>
+
         <service
             android:name=".Detection.MyService"
             android:enabled="true"
             android:exported="true">
         </service>
 
-        <activity android:name=".Detection.MainActivity">
-
-        </activity>
     </application>
 
 </manifest>

@@ -31,14 +31,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <CheckBox
-            android:id="@+id/use_pressure"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="Use Pressure"
-            android:layout_marginLeft="150dp"
-            android:visibility="invisible"/>
-
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
@@ -83,12 +75,4 @@
         </LinearLayout>
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="36dp"
-        android:gravity="center"
-        tools:text="Here shows the status"
-        />
 </LinearLayout>
