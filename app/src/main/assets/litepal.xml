@@ -19,7 +19,7 @@
             For example:
         <version value="1" />
     -->
-    <version value="2" />
+    <version value="5" />
 
     <!--
         Define your models in the list with mapping tag, LitePal will
@@ -32,9 +32,10 @@
         </list>
     -->
     <list>
-        <mapping class="com.shixun.android.leaving_detection.Detection.WifiData"></mapping>
-        <mapping class="com.shixun.android.leaving_detection.Detection.PressureData"></mapping>
-        <mapping class="com.shixun.android.leaving_detection.Detection.MagneticData"></mapping>
+        <mapping class="com.shixun.android.leaving_detection.DataCollection.WifiData"></mapping>
+        <mapping class="com.shixun.android.leaving_detection.DataCollection.PressureData"></mapping>
+        <mapping class="com.shixun.android.leaving_detection.DataCollection.MagneticData"></mapping>
+        <mapping class="com.shixun.android.leaving_detection.DataCollection.TemperatureData"></mapping>
 
     </list>
 

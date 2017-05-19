@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#FFF"
+              android:id="@+id/setting_form">
+
+       <ProgressBar
+           android:id="@+id/setting_progress"
+           style="?android:attr/progressBarStyleLarge"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginBottom="8dp"
+           android:visibility="gone"/>
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="@string/setting_sensor_title"
+           android:textSize="30dp"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="10dp"/>
+
+       <View
+           android:layout_width="match_parent"
+           android:layout_height="3px"
+           android:layout_marginTop="5dp"
+           android:background="#9E9E9E"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp">
+       </View>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="10dp"
+           android:gravity="center_vertical">
+
+              <TextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="Pressure Meter"
+                  android:textSize="20dp"/>
+
+              <com.kyleduo.switchbutton.SwitchButton
+                  android:id="@+id/switch_button_pressure"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.2"
+                  app:kswBackColor="@color/ksw_md_back_color"
+                  app:kswFadeBack="true"
+                  app:kswTextOff="Off"
+                  app:kswTextOn="On"/>
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="10dp"
+           android:gravity="center_vertical">
+
+              <TextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="Megnatic Meter"
+                  android:textSize="20dp"/>
+
+              <com.kyleduo.switchbutton.SwitchButton
+                  android:id="@+id/switch_button_megnatic"
+                  android:layout_width="0dp"
+                  android:layout_weight="0.2"
+                  android:layout_height="wrap_content"
+                  app:kswBackColor="@color/ksw_md_back_color"
+                  app:kswFadeBack="true"
+                  app:kswTextOff="Off"
+                  app:kswTextOn="On"/>
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="10dp"
+           android:gravity="center_vertical">
+
+              <TextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="Temperature"
+                  android:textSize="20dp"/>
+
+              <com.kyleduo.switchbutton.SwitchButton
+                  android:id="@+id/switch_button_temperature"
+                  android:layout_width="0dp"
+                  android:layout_weight="0.2"
+                  android:layout_height="wrap_content"
+                  app:kswBackColor="@color/ksw_md_back_color"
+                  app:kswFadeBack="true"
+                  app:kswTextOff="Off"
+                  app:kswTextOn="On"/>
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="20dp"
+           android:layout_marginLeft="10dp"
+           android:gravity="center_vertical">
+
+              <TextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="Wifi Scan"
+                  android:textSize="20dp"/>
+
+              <com.kyleduo.switchbutton.SwitchButton
+                  android:id="@+id/switch_button_wifi"
+                  android:layout_width="0dp"
+                  android:layout_weight="0.2"
+                  android:layout_height="wrap_content"
+                  app:kswBackColor="@color/ksw_md_back_color"
+                  app:kswFadeBack="true"
+                  app:kswTextOff="Off"
+                  app:kswTextOn="On"
+                  android:checked="true"/>
+       </LinearLayout>
+
+       <View
+           android:layout_width="match_parent"
+           android:layout_height="3px"
+           android:layout_marginTop="5dp"
+           android:background="#9E9E9E"
+           android:layout_marginLeft="10dp"
+           android:layout_marginRight="10dp">
+       </View>
+
+       <Button
+           android:id="@+id/collect_data"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Collecting Data"
+           android:layout_gravity="center"/>
+</LinearLayout>

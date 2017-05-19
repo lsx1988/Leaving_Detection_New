@@ -13,6 +13,12 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.shixun.android.leaving_detection.DataCollection.MagneticProcessRunnable;
+import com.shixun.android.leaving_detection.DataCollection.Message;
+import com.shixun.android.leaving_detection.DataCollection.PressureProcessRunnable;
+import com.shixun.android.leaving_detection.DataCollection.TemperatureProcessRunnable;
+import com.shixun.android.leaving_detection.DataCollection.WifiScanRunnable;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -33,17 +39,20 @@ public class MyService extends Service{
     private long lastTimeStamp;
     private List<Double> pressureDataList;
     private List<Double> magneticDataList;
-    private LimitQueue<Double> accelMeterDataQueue;
-    private String[] strArray = {"","",""};
+    private List<Double> temperatureList;
+    private List<Float> stepList;
+    private String[] strArray = new String[4];
 
     private boolean isPressureOn;
     private boolean isMagneticOn;
     private boolean isWifiscanOn;
-    private boolean isRemodel;
-    private boolean wifiscanTrigger;
-    private boolean isPhoneAlarm;
+    private boolean isTemperatureOn;
+    private boolean isWalking;
+    private int lastSize;
+    private int stepcount;
 
     private String str = "";
+    private float stepVar;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -61,15 +70,13 @@ public class MyService extends Service{
         isPressureOn = (boolean) intent.getExtras().get("isPressureOn");
         isMagneticOn = (boolean) intent.getExtras().get("isMagneticOn");
         isWifiscanOn = (boolean) intent.getExtras().get("isWifiScanOn");
-        isRemodel    = (boolean) intent.getExtras().get("isRemodel");
+        isTemperatureOn = (boolean) intent.getExtras().get("isTemperatureOn");
 
-        wifiscanTrigger = true;
-        isPhoneAlarm    = true;
-
-        lastTimeStamp       = 0;
-        pressureDataList    = new ArrayList<>();
-        magneticDataList    = new ArrayList<>();
-        accelMeterDataQueue = new LimitQueue<>(100);
+        lastTimeStamp    = 0;
+        pressureDataList = new ArrayList<>();
+        magneticDataList = new ArrayList<>();
+        temperatureList  = new ArrayList<>();
+        stepList = new ArrayList<>();
 
         wifiManager    = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -99,8 +106,8 @@ public class MyService extends Service{
         @Override
         public void onSensorChanged(SensorEvent event) {
             long currentTimeStamp = event.timestamp / 1000000;
-
             switch(event.sensor.getType()) {
+
                 case Sensor.TYPE_PRESSURE:
                     pressureDataList.add(Double.parseDouble(Float.toString(event.values[0])));
                     break;
@@ -111,56 +118,69 @@ public class MyService extends Service{
                     double magnetic = Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
                     magneticDataList.add(magnetic);
                     break;
+                case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                    temperatureList.add(Double.parseDouble(Float.toString(event.values[0])));
+                    break;
+                case Sensor.TYPE_STEP_COUNTER:
+                    isWalking = true;
+                    Log.d(TAG, "计步器触发: " + event.values[0]);
+                    stepList.add(event.values[0]);
             }
 
-            if (currentTimeStamp - lastTimeStamp >= 1000) {
+            if (currentTimeStamp - lastTimeStamp >= 500) {
                 if(isWifiscanOn) {
                     fixedThreadPool.execute(new WifiScanRunnable(wifiManager, strArray));
                 }
 
-//                if(isPressureOn) {
-//                    fixedThreadPool.execute(new PressureProcessRunnable(pressureDataList, strArray));
-//                }
+                if(isPressureOn) {
+                    List<Double> temp = new ArrayList<>(pressureDataList);
+                    pressureDataList.clear();
+                    fixedThreadPool.execute(new PressureProcessRunnable(temp, strArray));
+                }
 
                 if(isMagneticOn) {
-                    fixedThreadPool.execute(new MagneticProcessRunnable(magneticDataList, strArray));
+                    List<Double> temp = new ArrayList<>(magneticDataList);
+                    magneticDataList.clear();
+                    fixedThreadPool.execute(new MagneticProcessRunnable(temp, strArray));
                 }
 
-                for(String s: strArray) {
-                    str = str + s;
+                if(isTemperatureOn) {
+                    List<Double> temp = new ArrayList<>(temperatureList);
+                    temperatureList.clear();
+                    fixedThreadPool.execute(new TemperatureProcessRunnable(temp, strArray));
                 }
 
-                if(!str.equals("")){
-                    Log.d(TAG, str);
+                if(stepList.size() > 10) {
+                    int currentIndex = stepList.size() - 1;
+                    int lastIndex = currentIndex - 5;
+                    stepVar = stepList.get(currentIndex) - stepList.get(lastIndex);
+                }
+
+                if((isPressureOn == (strArray[0]!=null))
+                        && (isMagneticOn == (strArray[2]!=null))
+                        && (isWifiscanOn == (strArray[1]!=null))
+                        && (isTemperatureOn == (strArray[3]!=null))) {
+                    for(String s: strArray) {
+                        if(s != null) {
+                            str = str + s;
+                        }
+                    }
+
+                    if(stepList.size() == lastSize) {
+                        stepVar = 0;
+                        if(lastSize != 0) {
+                            stepList.remove(0);
+                            lastSize--;
+
+                        }
+                    } else {
+                        lastSize = stepList.size();
+                    }
                     EventBus.getDefault().post(new Message(str));
                     str = "";
                 }
+
                 lastTimeStamp = currentTimeStamp;
-            }
-
-//            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-//                double x = event.values[0];
-//                double y = event.values[1];
-//                double z = event.values[2];
-//                double accel = Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2));
-//                Log.d(TAG, "加速度: " + accel);
-//                accelMeterDataQueue.offer(accel);
-//                if (accelMeterDataQueue.size() == 100) {
-//                    double var = getVar(accelMeterDataQueue);
-//                    Log.d(TAG, " 加速度变化:" + var);
-//                    if (var > 1) {
-//                        wifiscanTrigger = true;
-//                        isPhoneAlarm = false;
-//                        EventBus.getDefault().post(new MessageStatus(true));
-//                    } else {
-//                        wifiscanTrigger = false;
-//                        EventBus.getDefault().post(new MessageStatus(false));
-//                    }
-//                }
-//            }
-
-            if (wifiscanTrigger == true || isPhoneAlarm == false) {
-
             }
         }
 
@@ -168,11 +188,6 @@ public class MyService extends Service{
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
         }
-
-//        @Subscribe(threadMode = ThreadMode.BACKGROUND)
-//        public void onMessageIfAlarm(MessageIfAlarm event) {
-//            isPhoneAlarm = event.isPhoneHasAlarm();
-//        }
     };
 
     private void registerSensor(Handler handler) {
@@ -188,20 +203,14 @@ public class MyService extends Service{
             if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD && isMagneticOn == true) {
                 mSensorManager.registerListener(mSensorEventListener, sensor, 100000, handler);
             }
+
+            if (sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE && isTemperatureOn == true) {
+                mSensorManager.registerListener(mSensorEventListener, sensor, 100000, handler);
+            }
+
+            if (sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+                mSensorManager.registerListener(mSensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL, handler);
+            }
         }
     }
-
-//    private double getVar(LimitQueue<Double> queue) {
-//        double mean = 0;
-//        int count = queue.size();
-//        double sum = 0;
-//        double sum_2 = 0;
-//
-//        for (double num : queue) {
-//            sum += Math.pow(num,2);
-//            sum_2 += num;
-//        }
-//        mean = sum_2 / count;
-//        return (sum - count * Math.pow(mean,2)) / (count - 1);
-//    }
 }

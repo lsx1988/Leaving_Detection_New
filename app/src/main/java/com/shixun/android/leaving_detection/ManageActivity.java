@@ -1,20 +1,31 @@
 package com.shixun.android.leaving_detection;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
-import com.avos.avoscloud.AVUser;
+import com.cocosw.bottomsheet.BottomSheet;
+import com.shixun.android.leaving_detection.Activity.ActionListener;
+import com.shixun.android.leaving_detection.Activity.GeneralFragmentActivity;
 import com.shixun.android.leaving_detection.Detection.MyService;
+import com.shixun.android.leaving_detection.Fragment.AmbientListFragment;
+import com.shixun.android.leaving_detection.Fragment.ChooseSensorFragment;
+import com.shixun.android.leaving_detection.Fragment.GeneralFragment;
+import com.shixun.android.leaving_detection.Fragment.MainFragment;
+import com.shixun.android.leaving_detection.Fragment.ModelListFragment;
+import com.shixun.android.leaving_detection.Fragment.ProfileFragment;
+import com.shixun.android.leaving_detection.Fragment.RawDataListFragment;
+import com.shixun.android.leaving_detection.Fragment.RemodelFragment;
+import com.shixun.android.leaving_detection.Fragment.ShowTextFragment;
 import com.special.ResideMenu.ResideMenu;
 import com.special.ResideMenu.ResideMenuItem;
 
 import java.io.File;
-
-import static com.avos.avoscloud.AVUser.getCurrentUser;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 public class ManageActivity extends GeneralFragmentActivity implements ActionListener, View.OnClickListener{
 
@@ -22,25 +33,20 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
     private ResideMenuItem itemHome;
     private ResideMenuItem itemProfile;
     private ResideMenuItem itemSettings;
-    private ResideMenuItem itemLogout;
     private ResideMenuItem itemFolder;
     private Intent mServiceIntent;
     private boolean isPressureOn;
     private boolean isMagneticOn;
     private boolean isWifiScanOn;
+    private boolean isTemperatureOn;
+    private Bundle bundleFromSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.general_activity_fragment);
         setupMenu();//初始化菜单项
-        //若用户已经登录,则强制登出
-        if(getCurrentUser() != null) {
-            getCurrentUser().logOut();
-        }
-        isPressureOn = false;
-        isMagneticOn = false;
-        isWifiScanOn = false;
+        bundleFromSetting = new Bundle();
     }
 
     /*
@@ -48,15 +54,7 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
      */
     @Override
     protected Fragment createFragment() {
-        return new LoginFragment();
-    }
-
-    /*
-    点击 register 按钮,导向至注册界面, loginFragment 压入回退栈
-     */
-    @Override
-    public void onRegisterClick() {
-        nevigateToFragment(RegisterFragment.class, true, null);
+        return new MainFragment();
     }
 
     /*
@@ -65,41 +63,26 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
     @Override
     public void onClick(View v) {
 
-        //点击 logout
-        if(v == itemLogout){
-            getCurrentUser().logOut();// 清除缓存用户对象
-            nevigateToFragment(LoginFragment.class, false, null);//返回至注册界面
-            v.setVisibility(View.GONE);//隐藏 logout 菜单项
-        }
-
-        //点击 setting
-        if(v == itemSettings) {
-            //若用户已经登录,则导航至 setting 界面
-            if(getCurrentUser() != null) {
-                nevigateToFragment(SettingFragment.class, false, null);
-            } else {
-                //用户没有登录,提示登录
-                Toast.makeText(this, "Please login First", Toast.LENGTH_SHORT).show();
-            }
-        }
-
         //点击 profile
         if(v == itemProfile) {
-            //若用户已经登录,则导航至 setting 界面
-            if(getCurrentUser() != null) {
-                nevigateToFragment(ProfileFragment.class, false, null);
-            } else {
-                //用户没有登录,提示登录
-                Toast.makeText(this, "Please login First", Toast.LENGTH_SHORT).show();
-            }
+            nevigateToFragment(ProfileFragment.class, false, bundleFromSetting);
         }
 
         //点击 folder
         if(v == itemFolder) {
-            nevigateToFragment(FolderFragment.class, false, null);
+            nevigateToFragment(RawDataListFragment.class, false, null);
         }
 
-        openMenu(false); //关闭菜单项
+        if(v == itemHome) {
+            nevigateToFragment(MainFragment.class, false, null);
+        }
+
+        //点击 profile
+        if(v == itemSettings) {
+            nevigateToFragment(AmbientListFragment.class, false, null);
+        }
+
+        openMenu(false); //隐藏菜单项
     }
 
     /*
@@ -122,26 +105,6 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
     }
 
     /*
-    响应成功 login
-     */
-    @Override
-    public void onLoginSuccessful() {
-        showLogoutMenuItem();// 显示menu
-        nevigateToFragment(MainFragment.class, false, null);// 导航至MainFragment
-    }
-
-    /*
-     响应成功 register, 说明为新用户,导航至 setting 界面进行首次设置
-     */
-    @Override
-    public void onRegisterSuccessful() {
-        clearBackStack();// loginFragment在回退栈中,将其清空
-        showLogoutMenuItem();//显示 logout 菜单项
-        openMenu(false);//关闭 menu
-        showModelOptionDialog();//显示 model 选择对话框
-    }
-
-    /*
     响应点击文件列表,显示文件内容
      */
     @Override
@@ -151,53 +114,60 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
         nevigateToFragment(ShowTextFragment.class, true, bundle);// 导航至ShowTextFragment
     }
 
-    /*
-    响应点击训练, 开始训练 scale 和 model
-     */
-
     @Override
-    public void onTrainData(File file) {
-
+    public void updateSensor(File file) {
+        String filename = file.getName();
+        String newName = filename.replace("_", " ");
+        StringTokenizer st = new StringTokenizer(newName," ");
+        st.nextElement();
+        while(st.hasMoreTokens()) {
+            String str = st.nextElement().toString();
+            switch(str.charAt(0)){
+                case 'P':
+                    if(str.charAt(1) == '1') {
+                        isPressureOn = true;
+                    } else {
+                        isPressureOn = false;
+                    }
+                    break;
+                case 'M':
+                    if(str.charAt(1) == '1') {
+                        isMagneticOn = true;
+                    } else {
+                        isMagneticOn = false;
+                    }
+                    break;
+                case 'W':
+                    if(str.charAt(1) == '1') {
+                        isWifiScanOn= true;
+                    } else {
+                        isWifiScanOn = false;
+                    }
+                    break;
+                case 'T':
+                    if(str.charAt(1) == '1') {
+                        isTemperatureOn = true;
+                    } else {
+                        isTemperatureOn = false;
+                    }
+            }
+        }
     }
 
     /*
-            响应成功采集传感器数据
-             */
-    @Override
-    public void onCollectSensorDataSuccessful() {
-        showFileSavingDialog();
-    }
-
-    /*
-        首次注册, 若选择默认模型,导航至 MainFragment
+         响应成功采集传感器数据, 导航至文件列表
          */
     @Override
-    public void onChooseDefaultModel() {
-        nevigateToFragment(MainFragment.class, false, null);
+    public void onCollectSensorDataSuccessful() {
+        nevigateToFragment(RawDataListFragment.class, false, null);
     }
 
     /*
-    首次注册,若选择自定义模型,导航至 SettingFragment
-     */
-    @Override
-    public void onChooseCustomModel() {
-        nevigateToFragment(SettingFragment.class, false, null);
-    }
-
-    /*
-     响应成功保存 setting, 若没有 remodel,导航至 mainFragment
-     */
-    @Override
-    public void onDetection() {
-        nevigateToFragment(MainFragment.class, false, null);
-    }
-
-    /*
-     响应成功保存 setting, 导航至 remodel fragment
-     */
+         响应成功保存 setting, 导航至 remodel fragment
+         */
     @Override
     public void onRemodel() {
-        nevigateToFragment(RemodelFragment.class, false, null);
+        nevigateToFragment(RemodelFragment.class, true, bundleFromSetting);
     }
 
     /*
@@ -208,35 +178,105 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
         return resideMenu.dispatchTouchEvent(ev);
     }
 
-    /*
-    开启 / 关闭 detection 服务
-     */
     @Override
-    public void startDetection(boolean isRemodel) {
-        //联网检查用户历史设置
-        checkSensor();
+    public void startMain(File file) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("loading", true);
+        bundle.putSerializable("model",file);
+        nevigateToFragment(MainFragment.class, false, bundle);
+    }
+
+    @Override
+    public void addNewTrainingData() {
+        nevigateToFragment(ChooseSensorFragment.class, true, null);
+    }
+
+    @Override
+    public void addNewModel() {
+        nevigateToFragment(RawDataListFragment.class, true, null);
+    }
+
+    @Override
+    public void saveAmbient(HashMap<String, String> ambientMap) {
+        bundleFromSetting.putSerializable("ambient", ambientMap);
+    }
+
+    /*
+                    开启 / 关闭 detection 服务
+                     */
+    @Override
+    public void startService() {
         if(mServiceIntent == null) {
             mServiceIntent = new Intent(this, MyService.class);
             mServiceIntent.putExtra("isPressureOn", isPressureOn);
             mServiceIntent.putExtra("isMagneticOn", isMagneticOn);
             mServiceIntent.putExtra("isWifiScanOn", isWifiScanOn);
-            mServiceIntent.putExtra("isRemodel", isRemodel);
-            this.startService(mServiceIntent);
+            mServiceIntent.putExtra("isTemperatureOn", isTemperatureOn);
         }
+
+        this.startService(mServiceIntent);
     }
 
     @Override
-    public void stopDetection() {
+    public void stopService() {
         if (mServiceIntent != null) {
             stopService(mServiceIntent);
         }
-
         mServiceIntent = null;
     }
 
     /*
-     初始化菜单选项
+     获取用户 sensor 选项情况
      */
+    @Override
+    public void onSendDataBack(Bundle bundle) {
+        isPressureOn = bundle.getBoolean("pressure");
+        isMagneticOn = bundle.getBoolean("magnetic");
+        isWifiScanOn = bundle.getBoolean("wifi");
+        isTemperatureOn = bundle.getBoolean("temperature");
+
+        bundleFromSetting.putBoolean("pressure", isPressureOn);
+        bundleFromSetting.putBoolean("magnetic", isMagneticOn);
+        bundleFromSetting.putBoolean("wifi", isWifiScanOn);
+        bundleFromSetting.putBoolean("temperature", isTemperatureOn);
+    }
+
+    /*
+     关闭程序时,用户自动登出
+     */
+    @Override
+    protected void onDestroy() {
+        if(mServiceIntent != null) {
+            stopService(mServiceIntent);
+        }
+        mServiceIntent = null;
+
+        super.onDestroy();
+    }
+
+    @Override
+    public void showModelTypeDialog() {
+//        ChooseModelType modelTypeDialog = new ChooseModelType();
+//        modelTypeDialog.show(this.fragmentManager, "modelType");
+        new BottomSheet
+                .Builder(this, R.style.BottomSheet_StyleDialog)
+                .title("PLEASE CHOOSE A MODEL")
+                .sheet(R.menu.menu_select_model)
+                .listener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case R.id.custom_model:
+                            nevigateToFragment(ModelListFragment.class, true, null);
+                            break;
+                }
+            }
+        }).show();
+    }
+
+    /*
+         初始化菜单选项
+         */
     private void setupMenu() {
         // attach to current activity
         resideMenu = new ResideMenu(this);
@@ -246,29 +286,20 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
         // create menu items;
         itemHome     = new ResideMenuItem(this, R.drawable.icon_home,     "Home");
         itemProfile  = new ResideMenuItem(this, R.drawable.icon_profile,  "Profile");
-        itemSettings = new ResideMenuItem(this, R.drawable.icon_settings, "Settings");
         itemFolder   = new ResideMenuItem(this, R.drawable.icon_folder,   "Folder");
+        itemSettings = new ResideMenuItem(this, R.drawable.icon_settings, "Setting");
 
         itemHome.setOnClickListener(this);
         itemProfile.setOnClickListener(this);
-        itemSettings.setOnClickListener(this);
         itemFolder.setOnClickListener(this);
+        itemSettings.setOnClickListener(this);
 
         resideMenu.addMenuItem(itemHome, ResideMenu.DIRECTION_LEFT);
         resideMenu.addMenuItem(itemProfile, ResideMenu.DIRECTION_LEFT);
-        resideMenu.addMenuItem(itemSettings, ResideMenu.DIRECTION_LEFT);
         resideMenu.addMenuItem(itemFolder, ResideMenu.DIRECTION_LEFT);
+        resideMenu.addMenuItem(itemSettings, ResideMenu.DIRECTION_LEFT);
 
         resideMenu.setSwipeDirectionDisable(ResideMenu.DIRECTION_RIGHT);
-    }
-
-    /*
-     用户成功登陆后, 显示 logout 菜单选项
-     */
-    private void showLogoutMenuItem() {
-        itemLogout   = new ResideMenuItem(this, R.drawable.icon_logout,   "Logout");
-        itemLogout.setOnClickListener(this);
-        resideMenu.addMenuItem(itemLogout, ResideMenu.DIRECTION_LEFT);
     }
 
     /**
@@ -281,7 +312,7 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
         try{
             Object obj = GeneralFragment.newInstance();
 
-            GeneralFragment generalFragment = (GeneralFragment) obj;
+            com.shixun.android.leaving_detection.Fragment.GeneralFragment generalFragment = (GeneralFragment) obj;
 
             if(bundle != null) {
                 generalFragment.setArguments(bundle);
@@ -320,50 +351,5 @@ public class ManageActivity extends GeneralFragmentActivity implements ActionLis
         } else {
             resideMenu.closeMenu();
         }
-    }
-
-    /*
-     获取用户 sensor 选项情况
-     */
-    private void checkSensor() {
-        if (getCurrentUser().has("pressure")) {
-            isPressureOn = AVUser.getCurrentUser().getBoolean("pressure");
-        }
-
-        if (getCurrentUser().has("magnetic")) {
-            isMagneticOn = getCurrentUser().getBoolean("magnetic");
-        }
-
-        if (getCurrentUser().has("wifi")) {
-            isWifiScanOn = getCurrentUser().getBoolean("wifi");
-        }
-    }
-
-    /*
-     显示 model 选择对话框
-     */
-    public void showModelOptionDialog () {
-        ModelOptionDialogFragment modelDialog = new ModelOptionDialogFragment();
-        modelDialog.show(this.fragmentManager, "ModelOptionDialog");
-    }
-
-    /*
-    显示文件保存对话框
-     */
-
-    public void showFileSavingDialog() {
-        FileSavingDialogFragment fileDialog = new FileSavingDialogFragment();
-        fileDialog.show(this.fragmentManager, "FileSavingDialog");
-
-    }
-
-    /*
-     关闭程序时,用户自动登出
-     */
-    @Override
-    protected void onDestroy() {
-        getCurrentUser().logOut();
-        stopService(mServiceIntent);
-        super.onDestroy();
     }
 }
