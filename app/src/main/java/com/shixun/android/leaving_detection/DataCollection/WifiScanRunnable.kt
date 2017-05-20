@@ -1,6 +1,5 @@
 package com.shixun.android.leaving_detection.DataCollection
 
-import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import org.litepal.crud.DataSupport
 
@@ -8,58 +7,41 @@ import org.litepal.crud.DataSupport
  * Created by shixunliu on 22/4/17.
  */
 
-class WifiScanRunnable(wifiManager: WifiManager, private val strArray: Array<String>) : Runnable {
+class WifiScanRunnable(val wifiManager: WifiManager, private val strArray: Array<String>, private val doubleArray: DoubleArray) : Runnable {
 
-    private var mWifiManager: WifiManager
-    private val dataSize = 20
-
-    init {
-        this.mWifiManager = wifiManager
-    }
+    private val dataSize = 10
 
     override fun run() {
         scanAndSaveWifiData()
         if (DataSupport.count(WifiData::class.java) >= dataSize) {
-            val currentValue = getMean("homeWifiLevel", WifiData::class.java)
+            val currentValue = scanAndSaveWifiData()
+            //val currentValue = getMean("homeWifiLevel", WifiData::class.java)
             val std = getStd("meanOfHomeWifi")
             val sumVar = getSumVar("meanOfHomeWifi")
+            doubleArray[1] = currentValue
             strArray[1] = " 30:$currentValue 31:$std 32:$sumVar"
 
-            //删除一组数据
-            val id = DataSupport.findFirst<WifiData>(WifiData::class.java).id
-            DataSupport.delete(WifiData::class.java, id.toLong())
+            val lastId = DataSupport.findFirst<WifiData>(WifiData::class.java).id
+            DataSupport.delete(WifiData::class.java, lastId.toLong())
         }
     }
 
-    private fun scanAndSaveWifiData() {
+    private fun scanAndSaveWifiData(): Double {
 
-        var wifiInfo: WifiInfo? = null
-        var isHomeWifi = 0.0
         var allWifiLevel = 0.0
-        var meanOfAllWifi = 0.0
-        var homeWifiLevel = 0.0
+        wifiManager.startScan()
+        val wifiInfo = wifiManager.connectionInfo
+        var homeWifiLevel = wifiInfo!!.rssi.toDouble()
+        val scanResults = wifiManager.scanResults
 
-        mWifiManager.startScan()
-        wifiInfo = mWifiManager.connectionInfo
-
-        homeWifiLevel = wifiInfo!!.rssi.toDouble()
-        if (Math.abs(homeWifiLevel) >= 95) {
-            homeWifiLevel = -95.0
-            isHomeWifi = 0.0
-        } else {
-            isHomeWifi = 1.0
+        scanResults.forEach {
+            allWifiLevel += it.level
         }
-
-        val scanResults = mWifiManager.scanResults
-        for (scanResult in scanResults) {
-            allWifiLevel = allWifiLevel + scanResult.level
-        }
-        meanOfAllWifi = allWifiLevel / scanResults.size
+        val meanOfAllWifi = allWifiLevel / scanResults.size
 
         val sample = WifiData()
         sample.homeWifiLevel = homeWifiLevel
         sample.meanOfAllWifiLevel = meanOfAllWifi
-        sample.isHomeWifi = isHomeWifi
         sample.stdOfAllWifiLevel = meanOfAllWifi
         if (DataSupport.count(WifiData::class.java) == 0) {
             sample.meanOfHomeWifi = homeWifiLevel
@@ -67,6 +49,7 @@ class WifiScanRunnable(wifiManager: WifiManager, private val strArray: Array<Str
             sample.meanOfHomeWifi = getMean("homeWifiLevel", WifiData::class.java)
         }
         sample.saveThrows()
+        return homeWifiLevel
     }
 
     private fun getSumVar(col: String): Double {
@@ -76,7 +59,7 @@ class WifiScanRunnable(wifiManager: WifiManager, private val strArray: Array<Str
         val size = lastSet.size
 
         val max = lastSet[size - 1].meanOfHomeWifi
-        val min = lastSet[0].meanOfHomeWifi!!
+        val min = lastSet[0].meanOfHomeWifi
 
         return max - min
     }

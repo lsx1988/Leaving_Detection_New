@@ -14,12 +14,14 @@ public class MagneticProcessRunnable implements Runnable{
     private List<Double> magneticDataList;
     private int dataSize = 20;
     private String[] strArray;
+    private double[] doubleArray;
     private double lastVar;
     private double varPercentage;
 
-    public MagneticProcessRunnable(List<Double> dataList, String[] strArray) {
+    public MagneticProcessRunnable(List<Double> dataList, String[] strArray, double[] doubleArray) {
         magneticDataList = dataList;
         this.strArray = strArray;
+        this.doubleArray = doubleArray;
     }
 
     @Override
@@ -56,12 +58,14 @@ public class MagneticProcessRunnable implements Runnable{
                 varPercentage = Math.abs(currentVar - lastVar);
             }
 
+            doubleArray[2] = getMean("magnetic", MagneticData.class);
             strArray[2] = " 60:" + getMean("magnetic", MagneticData.class)
                     + " 61:" + currentVar
                     + " 62:" + getEnergy("meanOfMagnetic")
                     + " 63:" + getDiff("meanOfMagnetic")
                     + " 64:" + varPercentage;
-            //删除一组数据
+
+            // delete the earliest data in database
             int id = DataSupport.findFirst(MagneticData.class).getId();
             DataSupport.delete(MagneticData.class, id);
 

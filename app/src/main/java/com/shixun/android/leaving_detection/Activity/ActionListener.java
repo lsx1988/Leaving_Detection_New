@@ -12,15 +12,14 @@ import java.util.HashMap;
 public interface ActionListener {
 
     void onUpNevigationClick();
-    void onMenuClick();
     void onRemodel();
     void startService();
     void stopService();
     void onCollectSensorDataSuccessful();
     void onShowFileText(File file);
-    void onSendDataBack(Bundle bundle);
+    void onSaveSensorChosen(Bundle bundle);
     void showModelTypeDialog();
-    void startMain(File file);
+    void startDetection(File file);
     void updateSensor(File file);
     void addNewTrainingData();
     void addNewModel();

@@ -28,7 +28,6 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/username"
             android:textSize="25dp"
             android:textColor="@color/normalTextColor"/>
     </LinearLayout>
@@ -55,7 +54,6 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/username"
             android:textSize="25dp"
             android:textColor="@color/normalTextColor"/>
     </LinearLayout>
@@ -82,7 +80,6 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/username"
             android:textSize="25dp"
             android:textColor="@color/normalTextColor"/>
     </LinearLayout>
@@ -109,62 +106,8 @@
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/username"
             android:textSize="25dp"
             android:textColor="@color/normalTextColor"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_private_model"/>
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Custom Model:"
-            android:textSize="25dp"
-            android:textColor="@color/normalTextColor"/>
-        <TextView
-            android:id="@+id/profile_private_model"
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="On"
-            android:textSize="25dp"
-            android:textColor="@color/normalTextColor"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_public_model"/>
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Default Model:"
-            android:textSize="25dp"
-            android:textColor="@color/normalTextColor"/>
-        <TextView
-            android:id="@+id/profile_public_model"
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="On"
-            android:textSize="25dp"
-            android:textColor="@color/normalTextColor"/>
-    </LinearLayout>
 </LinearLayout>

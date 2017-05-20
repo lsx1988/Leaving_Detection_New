@@ -49,6 +49,7 @@ public class RemodelFragment extends GeneralFragment {
     private HashMap<String, String> ambientMap;
     private String pStr, mStr, wStr, tStr;
     private int btnCount = 0;
+    private int count = 10;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -69,11 +70,11 @@ public class RemodelFragment extends GeneralFragment {
         DataSupport.deleteAll(TemperatureData.class);
 
         Bundle args = getArguments();
-        isPressureOn = args.getBoolean("pressure");
-        isMagneticOn = args.getBoolean("magnetic");
-        isWifiScanOn = args.getBoolean("wifi");
-        isTemperatureOn = args.getBoolean("temperature");
-        ambientMap = (HashMap<String, String>) args.getSerializable("ambient");
+        isPressureOn = args.getBoolean(getString(R.string.key_pressure_on));
+        isMagneticOn = args.getBoolean(getString(R.string.key_magnetic_on));
+        isWifiScanOn = args.getBoolean(getString(R.string.key_wifi_scan_on));
+        isTemperatureOn = args.getBoolean(getString(R.string.key_temperature_on));
+        ambientMap = (HashMap<String, String>) args.getSerializable(getString(R.string.key_ambient));
 
         if(ambientMap != null) {
             addButtonPerAmbient(ambientMap);
@@ -131,9 +132,14 @@ public class RemodelFragment extends GeneralFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(Message event) {
-        String str = event.getMessage();
-        rawData = rawData + String.valueOf(label) + str + "\n";
-        Log.d(TAG, str);
+        if(count == 10) {
+            String str = event.getMessage();
+            rawData = rawData + String.valueOf(label) + str + "\n";
+            Log.d(TAG, str);
+            count = 0;
+        }
+        count++;
+
     }
 
     private void addButtonPerAmbient(HashMap<String, String> ambientMap) {
@@ -159,31 +165,18 @@ public class RemodelFragment extends GeneralFragment {
     }
 
     private void writeFiles (String content, String fileName) {
-
-        // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-
-            // 获得SD卡的根目录
             File sdCardPath = Environment.getExternalStorageDirectory();
-
-            // 在 SD 卡的根目录下创建文件夹
-            File folder =  new File(sdCardPath + File.separator + "Sensor_Data");
-
+            File folder =  new File(sdCardPath + File.separator + getString(R.string.raw_data_folder));
             if(!folder.exists()) {
                 folder.mkdir();
             }
 
-        /*
-        * 文件输出操作
-        * */
             File testFile = new File(folder, fileName);
-            // 初始化文件输出流
             FileOutputStream fileOutputStream = null;
-            // 以追加模式打开文件输出流
             try {
                 fileOutputStream = new FileOutputStream(testFile, true);
                 fileOutputStream.write(content.getBytes());
-                // 关闭文件输出流
                 fileOutputStream.close();
 
             } catch (FileNotFoundException e) {
@@ -193,7 +186,6 @@ public class RemodelFragment extends GeneralFragment {
             }
 
         } else {
-            Log.d(TAG, "内部文件");
             // 初始化文件输出流
             FileOutputStream fileOutputStream = null;
             try {

@@ -14,10 +14,12 @@ public class PressureProcessRunnable implements Runnable {
     private List<Double> pressureDataList;
     private int dataSize = 20;
     private String[] strArray;
+    private double[] doubleArray;
 
-    public PressureProcessRunnable(List<Double> dataList,String[] strArray) {
+    public PressureProcessRunnable(List<Double> dataList,String[] strArray, double[] doubleArray) {
         pressureDataList = dataList;
         this.strArray = strArray;
+        this.doubleArray = doubleArray;
     }
 
     @Override
@@ -45,12 +47,13 @@ public class PressureProcessRunnable implements Runnable {
 
         if (DataSupport.count(PressureData.class) >= dataSize) {
 
+            doubleArray[0] = getMean("pressure", PressureData.class);
             strArray[0] = " 1:" + getMean("pressure", PressureData.class)
-//                        + " 2:" + getMax("meanOfPressure")
-//                        + " 3:" + getMin("meanOfPressure")
                         + " 2:" + getVar("meanOfPressure")
                         + " 3:" + getEnergy("meanOfPressure")
                         + " 4:" + getDiff("meanOfPressure");
+//                        + " 2:" + getMax("meanOfPressure")
+//                        + " 3:" + getMin("meanOfPressure")
 //                        + " 7:" + getHarr_1("meanOfPressure")[0]
 //                        + " 8:" + getHarr_1("meanOfPressure")[1]
 //                        + " 9:" + getHarr_1("meanOfPressure")[2]
@@ -62,7 +65,6 @@ public class PressureProcessRunnable implements Runnable {
 //                        + " 15:" + getHarr_2("meanOfPressure")[3]
 //                        + " 16:" + getHarr_2("meanOfPressure")[4]
 //                        + " 17:" + getHarr_2("meanOfPressure")[5]);
-            //删除一组数据
             int id = DataSupport.findFirst(PressureData.class).getId();
             DataSupport.delete(PressureData.class, id);
         }
@@ -71,14 +73,6 @@ public class PressureProcessRunnable implements Runnable {
     private double getMean(String col, Class className) {
         double mean = DataSupport.average(className, col);
         return mean;
-    }
-
-    private double getMax(String col) {
-        return DataSupport.max(PressureData.class, col, double.class);
-    }
-
-    private double getMin(String col) {
-        return DataSupport.min(PressureData.class, col, double.class);
     }
 
     private double getVar(String col) {
@@ -114,51 +108,60 @@ public class PressureProcessRunnable implements Runnable {
         return max - min;
     }
 
-    private double[] getHarr_1 (String col) {
-        double[] result = new double[5];
-        int[] step = {1,3,5,7,9};
-        double sumFirst = 0;
-        double sumLast = 0;
-        for(int i = 0; i < step.length; i++) {
-            List<PressureData> firstSet = DataSupport.select(col).order("id asc").limit(step[i]).find(PressureData.class);
-            for(PressureData data: firstSet){
-                sumFirst += data.getMeanOfPressure();
-            }
-
-            List<PressureData> lastSet = DataSupport.select(col).order("id desc").limit(step[i]).find(PressureData.class);
-            for(PressureData data: lastSet){
-                sumLast += data.getMeanOfPressure();
-            }
-
-            result[i] = sumLast - sumFirst;
-        }
-
-        return result;
-    }
-
-    private double[] getHarr_2 (String col) {
-        int count = DataSupport.count(PressureData.class);
-        double[] result = new double[6];
-        int[] step = {2,4,6,8,10,12};
-        double sumFirst = 0;
-        double sumLast = 0;
-        for(int i = 0; i < step.length; i++) {
-
-            int num = count / step[i];
-
-            List<PressureData> firstSet = DataSupport.select(col).order("id asc").limit(num).find(PressureData.class);
-            for(PressureData data: firstSet){
-                sumFirst += data.getMeanOfPressure();
-            }
-
-            List<PressureData> lastSet = DataSupport.select(col).order("id desc").limit(num).find(PressureData.class);
-            for(PressureData data: lastSet){
-                sumLast += data.getMeanOfPressure();
-            }
-
-            result[i] = sumLast - sumFirst;
-        }
-
-        return result;
-    }
+//    private double[] getHarr_1 (String col) {
+//        double[] result = new double[5];
+//        int[] step = {1,3,5,7,9};
+//        double sumFirst = 0;
+//        double sumLast = 0;
+//        for(int i = 0; i < step.length; i++) {
+//            List<PressureData> firstSet = DataSupport.select(col).order("id asc").limit(step[i]).find(PressureData.class);
+//            for(PressureData data: firstSet){
+//                sumFirst += data.getMeanOfPressure();
+//            }
+//
+//            List<PressureData> lastSet = DataSupport.select(col).order("id desc").limit(step[i]).find(PressureData.class);
+//            for(PressureData data: lastSet){
+//                sumLast += data.getMeanOfPressure();
+//            }
+//
+//            result[i] = sumLast - sumFirst;
+//        }
+//
+//        return result;
+//    }
+//
+//    private double[] getHarr_2 (String col) {
+//        int count = DataSupport.count(PressureData.class);
+//        double[] result = new double[6];
+//        int[] step = {2,4,6,8,10,12};
+//        double sumFirst = 0;
+//        double sumLast = 0;
+//        for(int i = 0; i < step.length; i++) {
+//
+//            int num = count / step[i];
+//
+//            List<PressureData> firstSet = DataSupport.select(col).order("id asc").limit(num).find(PressureData.class);
+//            for(PressureData data: firstSet){
+//                sumFirst += data.getMeanOfPressure();
+//            }
+//
+//            List<PressureData> lastSet = DataSupport.select(col).order("id desc").limit(num).find(PressureData.class);
+//            for(PressureData data: lastSet){
+//                sumLast += data.getMeanOfPressure();
+//            }
+//
+//            result[i] = sumLast - sumFirst;
+//        }
+//
+//        return result;
+//    }
+//
+//
+//    private double getMax(String col) {
+//        return DataSupport.max(PressureData.class, col, double.class);
+//    }
+//
+//    private double getMin(String col) {
+//        return DataSupport.min(PressureData.class, col, double.class);
+//    }
 }

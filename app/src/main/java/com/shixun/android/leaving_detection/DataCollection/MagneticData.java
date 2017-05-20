@@ -4,6 +4,7 @@ import org.litepal.crud.DataSupport;
 
 /**
  * Created by shixunliu on 23/4/17.
+ * The class is used for storing magnetic value in database
  */
 
 public class MagneticData extends DataSupport {

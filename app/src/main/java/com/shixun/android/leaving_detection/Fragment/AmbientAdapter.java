@@ -41,7 +41,7 @@ public class AmbientAdapter extends RecyclerView.Adapter<AmbientAdapter.AmbientV
     public void onBindViewHolder(AmbientViewHolder holder, int position) {
         String ambientName = mAmbientList.get(position);
         holder.mTextView.setText(ambientName);
-        holder.mNumber.setText("1");
+        holder.mNumber.setText(mContext.getResources().getString(R.string.ini_ambient_num));
     }
 
     @Override
@@ -99,25 +99,25 @@ public class AmbientAdapter extends RecyclerView.Adapter<AmbientAdapter.AmbientV
             builder=new AlertDialog.Builder(mContext);
             builder.setIcon(R.drawable.icon_warning);
             String ambient = mAmbientList.get(index);
-            builder.setTitle("Delete Ambient");
+            builder.setTitle(mContext.getResources().getString(R.string.delete_ambient_title));
             builder.setMessage("Do you want to delete " + ambient + " ?");
 
-            //监听下方button点击事件
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            // listen to btn click
+            builder.setPositiveButton(mContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     mAmbientList.remove(index);
                     notifyItemRemoved(getLayoutPosition());//Attention!
                 }
             });
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(mContext.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    mNumber.setText("1");
+                    mNumber.setText(mContext.getResources().getString(R.string.ini_ambient_num));
                 }
             });
 
-            //设置对话框是可取消的
+            // dialog is not cancelable
             builder.setCancelable(false);
             AlertDialog dialog=builder.create();
             dialog.show();

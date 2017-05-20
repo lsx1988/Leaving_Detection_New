@@ -4,6 +4,7 @@ import org.litepal.crud.DataSupport;
 
 /**
  * Created by shixunliu on 26/3/17.
+ * The class is used for storing pressure value in database
  */
 
 public class PressureData extends DataSupport {

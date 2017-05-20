@@ -18,6 +18,7 @@ import com.shixun.android.leaving_detection.DataCollection.Message;
 import com.shixun.android.leaving_detection.DataCollection.PressureProcessRunnable;
 import com.shixun.android.leaving_detection.DataCollection.TemperatureProcessRunnable;
 import com.shixun.android.leaving_detection.DataCollection.WifiScanRunnable;
+import com.shixun.android.leaving_detection.R;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,25 +32,22 @@ public class MyService extends Service{
     private static final String TAG      = "MyService";
     private WifiManager wifiManager      = null;
     private SensorManager mSensorManager = null;
-
     private HandlerThread sensorHandlerThread;
     private Handler sensorThreadHandler;
     private ExecutorService fixedThreadPool;
-
-    private long lastTimeStamp;
     private List<Double> pressureDataList;
     private List<Double> magneticDataList;
     private List<Double> temperatureList;
     private List<Float> stepList;
     private String[] strArray = new String[4];
-
+    private double[] doubleArray = new double[4];
     private boolean isPressureOn;
     private boolean isMagneticOn;
     private boolean isWifiscanOn;
     private boolean isTemperatureOn;
-    private boolean isWalking;
+    private long lastTimeStamp;
     private int lastSize;
-    private int stepcount;
+    private int count = 0;
 
     private String str = "";
     private float stepVar;
@@ -67,10 +65,10 @@ public class MyService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        isPressureOn = (boolean) intent.getExtras().get("isPressureOn");
-        isMagneticOn = (boolean) intent.getExtras().get("isMagneticOn");
-        isWifiscanOn = (boolean) intent.getExtras().get("isWifiScanOn");
-        isTemperatureOn = (boolean) intent.getExtras().get("isTemperatureOn");
+        isPressureOn = (boolean) intent.getExtras().get(getResources().getString(R.string.key_pressure_on));
+        isMagneticOn = (boolean) intent.getExtras().get(getResources().getString(R.string.key_magnetic_on));
+        isWifiscanOn = (boolean) intent.getExtras().get(getResources().getString(R.string.key_wifi_scan_on));
+        isTemperatureOn = (boolean) intent.getExtras().get(getResources().getString(R.string.key_temperature_on));
 
         lastTimeStamp    = 0;
         pressureDataList = new ArrayList<>();
@@ -79,15 +77,14 @@ public class MyService extends Service{
         stepList = new ArrayList<>();
 
         wifiManager    = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorHandlerThread = new HandlerThread("sensorListenThread");
         sensorHandlerThread.start();
         sensorThreadHandler = new Handler(sensorHandlerThread.getLooper());
         registerSensor(sensorThreadHandler);
 
         fixedThreadPool = Executors.newCachedThreadPool();
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -98,7 +95,6 @@ public class MyService extends Service{
         sensorHandlerThread.quit();
         fixedThreadPool.shutdown();
         mSensorManager.unregisterListener(mSensorEventListener);
-        Log.d(TAG, "onDestroy executed");
     }
 
 
@@ -122,32 +118,31 @@ public class MyService extends Service{
                     temperatureList.add(Double.parseDouble(Float.toString(event.values[0])));
                     break;
                 case Sensor.TYPE_STEP_COUNTER:
-                    isWalking = true;
                     Log.d(TAG, "计步器触发: " + event.values[0]);
                     stepList.add(event.values[0]);
             }
 
-            if (currentTimeStamp - lastTimeStamp >= 500) {
+            if (currentTimeStamp - lastTimeStamp >= 1000) {
                 if(isWifiscanOn) {
-                    fixedThreadPool.execute(new WifiScanRunnable(wifiManager, strArray));
+                    fixedThreadPool.execute(new WifiScanRunnable(wifiManager, strArray, doubleArray));
                 }
 
                 if(isPressureOn) {
                     List<Double> temp = new ArrayList<>(pressureDataList);
                     pressureDataList.clear();
-                    fixedThreadPool.execute(new PressureProcessRunnable(temp, strArray));
+                    fixedThreadPool.execute(new PressureProcessRunnable(temp, strArray, doubleArray));
                 }
 
                 if(isMagneticOn) {
                     List<Double> temp = new ArrayList<>(magneticDataList);
                     magneticDataList.clear();
-                    fixedThreadPool.execute(new MagneticProcessRunnable(temp, strArray));
+                    fixedThreadPool.execute(new MagneticProcessRunnable(temp, strArray, doubleArray));
                 }
 
                 if(isTemperatureOn) {
                     List<Double> temp = new ArrayList<>(temperatureList);
                     temperatureList.clear();
-                    fixedThreadPool.execute(new TemperatureProcessRunnable(temp, strArray));
+                    fixedThreadPool.execute(new TemperatureProcessRunnable(temp, strArray, doubleArray));
                 }
 
                 if(stepList.size() > 10) {
@@ -166,17 +161,21 @@ public class MyService extends Service{
                         }
                     }
 
-                    if(stepList.size() == lastSize) {
-                        stepVar = 0;
-                        if(lastSize != 0) {
-                            stepList.remove(0);
-                            lastSize--;
-
-                        }
-                    } else {
-                        lastSize = stepList.size();
-                    }
-                    EventBus.getDefault().post(new Message(str));
+//                    if(stepList.size() == lastSize) {
+//                        stepVar = 0;
+//                        if(lastSize != 0) {
+//                            stepList.remove(0);
+//                            lastSize--;
+//
+//                        }
+//                    } else {
+//                        lastSize = stepList.size();
+//                    }
+                    EventBus.getDefault().post(new Message(str,
+                            doubleArray[0],
+                            doubleArray[2],
+                            doubleArray[3],
+                            doubleArray[1]));
                     str = "";
                 }
 

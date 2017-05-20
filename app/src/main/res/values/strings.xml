@@ -1,40 +1,69 @@
 <resources>
     <string name="app_name">Leaving_Detection</string>
     <string name="action_logout">Logout</string>
-    <string name="title_activity_login">LOGIN</string>
-    <string name="publish">Publish</string>
-    <string name="login">Login</string>
-    <string name="register">Register</string>
-    <string name="username">Username</string>
-    <string name="action_sign_in_short">Login</string>
-    <string name="prompt_password">Password</string>
-    <string name="error_invalid_email">Invalid Email Format</string>
-    <string name="error_invalid_password">The password length should be over 4</string>
-    <string name="error_incorrect_password">Invalid password</string>
-    <string name="error_field_required">Required Field</string>
-    <string name="title_activity_register">Register</string>
-    <string name="action_sign_in">Register and Login</string>
     <string name="start_detection">START</string>
     <string name="stop_detection">STOP</string>
     <string name="leaving_detected">Leaving Detected</string>
-    <string name="wifi_level">Here is wifi level</string>
-    <string name="Wifi_disconnect">No Wifi</string>
-    <string name="stop_run">Program stops</string>
-    <string name="setting">Setting</string>
-    <string name="profile">Profile</string>
-    <string name="welcome">WELCOME NEW USER</string>
-    <string name="comment_custom">You will define you own sensors</string>
-    <string name="comment_default">Only Wifi Scan must be open</string>
+    <string name="wifi_level">Wifi level</string>
+    <string name="pressure_level">Pressure Level</string>
+    <string name="magnetic_level">Magnetic Level</string>
+    <string name="temperature_level">Temperature Level</string>
+    <string name="leaving_poss">Leaving Possibility</string>
+    <string name="menu_setting">Setting</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_folder">Folder</string>
     <string name="custom_model">Custom Model</string>
     <string name="default_model">Default Model</string>
-    <string name="dialog_ok">OK</string>
-    <string name="dialog_cancel">CANCEL</string>
-    <string name="setting_model_title">MODEL</string>
     <string name="setting_sensor_title">SENSOR</string>
-    <string name="setting_remodel_title">Re-MODEL</string>
     <string name="remodel_start">START SENSING</string>
     <string name="remodel_leaving">LEAVING HOME</string>
     <string name="remodel_stop">STOP SENSING</string>
-    <string name="file_save_success">Do You Want To Train Model Right Now?</string>
     <string name="filelist">File List</string>
+
+
+    <string name="key_pressure_on">pressure on</string>
+    <string name="key_magnetic_on">magnetic on</string>
+    <string name="key_temperature_on">temperature on</string>
+    <string name="key_wifi_scan_on">wifi scan on</string>
+    <string name="key_ambient">ambient</string>
+
+    <string name="new_ambient_dialog_hint">Your new ambient</string>
+    <string name="new_ambient_dialog_title">PLEASE TYPE IN THE AMBIENT NAME</string>
+    <string name="no_blank_name">Name can not be blank</string>
+    <string name="add_ambient_ok">New ambient is added successfully</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
+    <string name="not_valid">Not Valid</string>
+
+    <string name="ambient_list_title">Ambient List</string>
+    <string name="select_sensor_title">Select Sensor</string>
+    <string name="start_detection_title">Detection</string>
+    <string name="delete_ambient_title">Delete Ambient</string>
+    <string name="delete_model_title">Delete Model</string>
+    <string name="delete_raw_data_title">Delete Raw Data</string>
+    <string name="model_list_title">Model List</string>
+    <string name="raw_data_content_title">Raw Data Text</string>
+
+    <string name="ini_ambient_num">1</string>
+    <string name="ambient_livingroom">Living Room</string>
+    <string name="ambient_bedroom">Bedroom</string>
+    <string name="ambient_kitchen">Kitchen</string>
+    <string name="ambient_washroom">Washroom</string>
+
+    <string name="error_one_sensor_at_least">ONE SENSOR should be selected at least</string>
+    <string name="error_sensor_not_available">This sensor is not available</string>
+
+    <string name="model_file_name">model.txt</string>
+    <string name="model_folder">LeavingDetection</string>
+    <string name="model_selected">Model Selected</string>
+    <string name="model_added_success">New model is added successfully</string>
+    <string name="choose_model_dialog_title">PLEASE CHOOSE A MODEL</string>
+
+    <string name="scale_para_file_name">scale_para.txt</string>
+    <string name="scaled_train_data_folder">Data_Scaled</string>
+    <string name="scaled_train_data_file_name">train_scaled.txt</string>
+    <string name="raw_data_folder">Sensor_Data</string>
+
 </resources>

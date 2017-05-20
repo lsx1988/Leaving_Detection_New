@@ -30,8 +30,12 @@ public class AmbientListFragment extends GeneralFragment implements View.OnClick
 
     @Override
     public void onResume() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Ambient");
+        ((AppCompatActivity) getActivity())
+                .getSupportActionBar()
+                .setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity) getActivity())
+                .getSupportActionBar()
+                .setTitle(getResources().getString(R.string.ambient_list_title));
         super.onResume();
     }
 
@@ -44,10 +48,8 @@ public class AmbientListFragment extends GeneralFragment implements View.OnClick
         mAmbientAdapter = new AmbientAdapter();
         mRecyclerView.setAdapter(mAmbientAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
         mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.btnFloatingAction);
         mFloatingActionButton.setOnClickListener(this);
-
         defaultAmbientList();
         return view;
     }
@@ -74,10 +76,10 @@ public class AmbientListFragment extends GeneralFragment implements View.OnClick
 
     private void defaultAmbientList() {
         List<String> ambientList = new ArrayList<>();
-        ambientList.add("Living Room");
-        ambientList.add("Bedroom");
-        ambientList.add("Kitchen");
-        ambientList.add("Washroom");
+        ambientList.add(getString(R.string.ambient_livingroom));
+        ambientList.add(getString(R.string.ambient_bedroom));
+        ambientList.add(getString(R.string.ambient_kitchen));
+        ambientList.add(getString(R.string.ambient_washroom));
         mAmbientAdapter.setAmbientList(ambientList);
     }
 

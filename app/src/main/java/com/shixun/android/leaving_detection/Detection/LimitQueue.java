@@ -10,7 +10,6 @@ import java.util.Queue;
  */
 
 public class LimitQueue<E> implements Queue<E> {
-    //队列长度
     private int limit;
 
     Queue<E> queue = new LinkedList<E>();
@@ -26,14 +25,13 @@ public class LimitQueue<E> implements Queue<E> {
     @Override
     public boolean offer(E e){
         if(queue.size() >= limit){
-            //如果超出长度,入队时,先出队
             queue.poll();
         }
         return queue.offer(e);
     }
 
     /**
-     * 出队
+     * pop up the element from queue
      * @return
      */
     @Override
@@ -42,7 +40,7 @@ public class LimitQueue<E> implements Queue<E> {
     }
 
     /**
-     * 获取队列
+     * get the queue object
      * @return
      */
     public Queue<E> getQueue(){
@@ -50,7 +48,7 @@ public class LimitQueue<E> implements Queue<E> {
     }
 
     /**
-     * 获取限制大小
+     * get the limit number
      * @return
      */
     public int getLimit(){

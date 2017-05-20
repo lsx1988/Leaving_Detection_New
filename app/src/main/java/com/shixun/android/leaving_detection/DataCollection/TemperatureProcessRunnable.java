@@ -14,10 +14,12 @@ public class TemperatureProcessRunnable implements Runnable{
     private List<Double> temperatureDataList;
     private int dataSize = 20;
     private String[] strArray;
+    private double[] doubleArray;
 
-    public TemperatureProcessRunnable(List<Double> dataList, String[] strArray) {
+    public TemperatureProcessRunnable(List<Double> dataList, String[] strArray, double[] doubleArray) {
         this.temperatureDataList = dataList;
         this.strArray = strArray;
+        this.doubleArray = doubleArray;
     }
 
     @Override
@@ -47,11 +49,12 @@ public class TemperatureProcessRunnable implements Runnable{
 
             double currentVar = getVar("meanOfTemperature");
 
+            doubleArray[3] = getMean("temperature", TemperatureData.class);
             strArray[3] = " 70:" + getMean("temperature", TemperatureData.class)
                     + " 71:" + currentVar
                     + " 72:" + getEnergy("meanOfTemperature")
                     + " 73:" + getDiff("meanOfTemperature");
-            //删除一组数据
+
             int id = DataSupport.findFirst(TemperatureData.class).getId();
             DataSupport.delete(TemperatureData.class, id);
 

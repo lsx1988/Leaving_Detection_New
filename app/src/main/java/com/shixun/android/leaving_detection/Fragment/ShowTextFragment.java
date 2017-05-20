@@ -31,7 +31,7 @@ public class ShowTextFragment extends GeneralFragment {
     @Override
     public void onResume() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Current File");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.raw_data_content_title));
         File file = (File) getArguments().getSerializable("textFile");
         try {
             showText(file, mTextView);

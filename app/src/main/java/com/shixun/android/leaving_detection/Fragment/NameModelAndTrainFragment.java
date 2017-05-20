@@ -45,10 +45,10 @@ public class NameModelAndTrainFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.dialog_type_in_name, container, false);
         ButterKnife.bind(this, view);
-        setCancelable(false);//点击 dialog 以外区域不会关闭 dialog
+        setCancelable(false);
         file = (File) getArguments().getSerializable("textFile");
         return view;
     }
@@ -60,26 +60,22 @@ public class NameModelAndTrainFragment extends DialogFragment {
         String folderName = modelName.getText() + " " + sensorInfo;
         createScalePara(file,folderName);
         createModel(folderName);
-        showSnackBar("New model is added successfully");
-        setCancelable(true);//dialog 可关闭
-        this.dismiss();//关闭dialog
+        showSnackBar(getString(R.string.model_added_success));
+        setCancelable(true);
+        this.dismiss();
     }
 
     @OnClick(R.id.btn_dialog_cancel)
     public void clickCancel() {
-        setCancelable(true);//dialog 可关闭
-        this.dismiss();//关闭dialog
+        setCancelable(true);
+        this.dismiss();
     }
 
     private void createScalePara(File file, String folderName) {
-        // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-
-            // 获得SD卡的根目录
             File sdCardPath = Environment.getExternalStorageDirectory();
 
-            // 在 SD 卡的根目录下创建文件夹
-            File folder =  new File(sdCardPath + File.separator + "LeavingDetection");
+            File folder =  new File(sdCardPath + File.separator + getString(R.string.model_folder));
             if(!folder.exists()) {
                 folder.mkdir();
             }
@@ -88,7 +84,7 @@ public class NameModelAndTrainFragment extends DialogFragment {
                 folder.mkdir();
             }
 
-            String[] args = {"-s",folder.toString()+"/scale_para.txt"};
+            String[] args = {"-s",folder.toString()+ File.separator + getString(R.string.scale_para_file_name)};
             removeOldTrainScaledData();
             svm_scale_Remodel scale = new svm_scale_Remodel();
             try {
@@ -100,17 +96,10 @@ public class NameModelAndTrainFragment extends DialogFragment {
     }
 
     private void removeOldTrainScaledData() {
-        // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-
-            // 获得SD卡的根目录
             File sdCardPath = Environment.getExternalStorageDirectory();
-
-            // 在 SD 卡的根目录下创建文件夹
-            File folder = new File(sdCardPath + File.separator + "Data_Scaled");
-
-            File file = new File(folder, "/train_scaled.txt");
-
+            File folder = new File(sdCardPath + File.separator +  getString(R.string.scaled_train_data_folder));
+            File file = new File(folder + File.separator + getString(R.string.scaled_train_data_file_name));
             if(file.exists()) {
                 file.delete();
             }
@@ -118,15 +107,11 @@ public class NameModelAndTrainFragment extends DialogFragment {
     }
 
     private void createModel(String folderName) {
-        // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            // 获得SD卡的根目录
             File sdCardPath = Environment.getExternalStorageDirectory();
-            File folder = new File(sdCardPath + File.separator + "Data_Scaled");
-            File file = new File(folder, "/train_scaled.txt");
-
+            File folder = new File(sdCardPath + File.separator + getString(R.string.scaled_train_data_folder));
+            File file = new File(folder + File.separator + getString(R.string.scaled_train_data_file_name));
             if(file.exists()) {
-                //String[] args = {"-b","1","-c","32","-g","0.5"};
                 String[] args = {"-b","1"};
                 try {
                     svm_train_Remodel.main(args, file, getModelFilePath(folderName));
@@ -140,8 +125,7 @@ public class NameModelAndTrainFragment extends DialogFragment {
     private String getModelFilePath(String folderName) throws IOException{
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             File sdCardPath = Environment.getExternalStorageDirectory();
-            // 在 SD 卡的根目录下创建文件夹
-            File folder =  new File(sdCardPath + File.separator + "LeavingDetection");
+            File folder =  new File(sdCardPath + File.separator + getString(R.string.model_folder));
             if(!folder.exists()) {
                 folder.mkdir();
             }
@@ -149,7 +133,7 @@ public class NameModelAndTrainFragment extends DialogFragment {
             if(!folder.exists()) {
                 folder.mkdir();
             }
-            File file = new File(folder, "/model.txt");
+            File file = new File(folder + File.separator + getString(R.string.model_file_name));
             return file.toString();
         } else {
             return null;

@@ -16,8 +16,6 @@ public class WifiData extends DataSupport{
 
     private Double stdOfAllWifiLevel;
 
-    private Double isHomeWifi;
-
     private Double meanOfHomeWifi;
 
     public Double getHomeWifiLevel() {
@@ -42,14 +40,6 @@ public class WifiData extends DataSupport{
 
     public void setStdOfAllWifiLevel(Double stdOfAllWifiLevel) {
         this.stdOfAllWifiLevel = stdOfAllWifiLevel;
-    }
-
-    public Double getIsHomeWifi() {
-        return isHomeWifi;
-    }
-
-    public void setIsHomeWifi(Double isHomeWifi) {
-        this.isHomeWifi = isHomeWifi;
     }
 
     public Double getMeanOfHomeWifi() {

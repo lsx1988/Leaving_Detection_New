@@ -14,8 +14,6 @@ import android.widget.TextView;
 
 import com.shixun.android.leaving_detection.R;
 
-import java.io.File;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -26,7 +24,6 @@ import butterknife.OnClick;
 
 public class AddNewAmbientDialog extends DialogFragment {
 
-    private File file;
     @BindView(R.id.btn_dialog_ok)
     Button mButtonOk;
     @BindView(R.id.btn_dialog_cancel)
@@ -39,12 +36,12 @@ public class AddNewAmbientDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);//remove dialog title
         View view = inflater.inflate(R.layout.dialog_type_in_name, container, false);
         ButterKnife.bind(this, view);
-        ambientName.setHint("Your new ambient");
-        mComment.setText("PLEASE TYPE IN THE AMBIENT NAME");
-        setCancelable(false);//点击 dialog 以外区域不会关闭 dialog
+        ambientName.setHint(getResources().getString(R.string.new_ambient_dialog_hint));
+        mComment.setText(getResources().getString(R.string.new_ambient_dialog_title));
+        setCancelable(false);//dialog will not close when click outside area
         return view;
     }
 
@@ -52,19 +49,19 @@ public class AddNewAmbientDialog extends DialogFragment {
     public void clickOk() {
         String name = ambientName.getText().toString();
         if(name.equals("")) {
-            showSnackBar("Name can not be blank", R.drawable.icon_alert);
+            showSnackBar(getResources().getString(R.string.no_blank_name), R.drawable.icon_alert);
         } else {
             ((AmbientListFragment) getTargetFragment()).addNewAmbient(name);
-            showSnackBar("New ambient is added successfully",R.drawable.icon_success);
-            setCancelable(true);//dialog 可关闭
-            this.dismiss();//关闭dialog
+            showSnackBar(getResources().getString(R.string.add_ambient_ok),R.drawable.icon_success);
+            setCancelable(true);//dialog is cancelable
+            this.dismiss();//close dialog
         }
     }
 
     @OnClick(R.id.btn_dialog_cancel)
     public void clickCancel() {
-        setCancelable(true);//dialog 可关闭
-        this.dismiss();//关闭dialog
+        setCancelable(true);
+        this.dismiss();
     }
 
     private void showSnackBar(String msg, int iconId) {

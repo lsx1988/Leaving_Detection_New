@@ -32,7 +32,7 @@ public class ModelListFragment extends GeneralFragment implements View.OnClickLi
     @Override
     public void onResume() {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Model List");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.model_list_title));
         super.onResume();
     }
 
@@ -53,7 +53,7 @@ public class ModelListFragment extends GeneralFragment implements View.OnClickLi
                 if(getActivity() instanceof ActionListener) {
                     if(category.equals("model")) {
                         ((ActionListener) getActivity()).updateSensor(file);
-                        ((ActionListener) getActivity()).startMain(file);
+                        ((ActionListener) getActivity()).startDetection(file);
                         ((ActionListener) getActivity()).startService();
                     }
                 }
@@ -81,14 +81,9 @@ public class ModelListFragment extends GeneralFragment implements View.OnClickLi
     private void FetchFile() {
         List<File> fileList = new ArrayList<>();
 
-        // 判断SD卡是否存在，并且本程序是否拥有SD卡的权限
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-
-            // 获得SD卡的根目录
             File sdCardPath = Environment.getExternalStorageDirectory();
-
-            // 在 SD 卡的根目录下创建文件夹
-            String path = sdCardPath.toString() + File.separator + "LeavingDetection";
+            String path = sdCardPath.toString() + File.separator + getString(R.string.model_folder);
             File directory = new File(path);
             File[] files = directory.listFiles();
 

@@ -93,11 +93,11 @@ public class ModelAdapter extends RecyclerView.Adapter<ModelAdapter.ModelViewHol
         private void isDeleteModelDialog(final File file) {
             builder=new AlertDialog.Builder(mContext);
             builder.setIcon(R.drawable.icon_warning);
-            builder.setTitle("Delete Model");
+            builder.setTitle(mContext.getString(R.string.delete_model_title));
             builder.setMessage("Do you want to delete " + file.getName() + " ?");
 
             //监听下方button点击事件
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(mContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     fileList.remove(file);
@@ -105,7 +105,7 @@ public class ModelAdapter extends RecyclerView.Adapter<ModelAdapter.ModelViewHol
                     notifyItemRemoved(getLayoutPosition());//Attention!
                 }
             });
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -121,11 +121,11 @@ public class ModelAdapter extends RecyclerView.Adapter<ModelAdapter.ModelViewHol
         private void isModelChosenDialog(final File file) {
             builder=new AlertDialog.Builder(mContext);
             builder.setIcon(R.drawable.icon_selected);
-            builder.setTitle("Model Selected");
+            builder.setTitle(mContext.getString(R.string.model_selected));
             builder.setMessage("Do you want to select " + file.getName() + " model ?");
 
             //监听下方button点击事件
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(mContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if (clickListener != null) {
@@ -133,7 +133,7 @@ public class ModelAdapter extends RecyclerView.Adapter<ModelAdapter.ModelViewHol
                     }
                 }
             });
-            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(mContext.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 

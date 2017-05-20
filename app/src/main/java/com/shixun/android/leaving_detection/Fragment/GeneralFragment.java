@@ -38,21 +38,12 @@ public class GeneralFragment extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_main, menu);
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 ((ActionListener) getActivity()).onUpNevigationClick();
                 break;
-//            default:
-//                ((ActionListener) getActivity()).onMenuClick();
-//                break;
         }
         return super.onOptionsItemSelected(item);
     }

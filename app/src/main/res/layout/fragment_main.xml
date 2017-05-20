@@ -30,12 +30,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"/>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -46,33 +40,40 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/wifi_level"
                 android:layout_gravity="center"
-                android:textSize="25sp"
-                android:visibility="invisible"/>
+                android:textSize="25sp"/>
             <TextView
                 android:id="@+id/pressure_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="Pressure Level"
                 android:layout_gravity="center"
-                android:textSize="25sp"
-                android:visibility="invisible"/>
+                android:textSize="25sp"/>
+            <TextView
+                android:id="@+id/magnetic_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Magnetic Level"
+                android:layout_gravity="center"
+                android:textSize="25sp"/>
+            <TextView
+                android:id="@+id/temperature_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Temperature Level"
+                android:layout_gravity="center"
+                android:textSize="25sp"/>
             <TextView
                 android:id="@+id/possibility"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Possibility"
+                android:hint="Leaving Possibility"
                 android:layout_gravity="center"
-                android:textSize="25sp"
-                android:visibility="invisible"/>
-            <TextView
-                android:id="@+id/walking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Walking"
-                android:layout_gravity="center"
-                android:textSize="25sp"
-                android:visibility="invisible"/>
+                android:textSize="25sp"/>
         </LinearLayout>
     </FrameLayout>
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
 </LinearLayout>

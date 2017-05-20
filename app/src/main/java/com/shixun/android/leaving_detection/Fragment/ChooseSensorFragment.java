@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -39,11 +38,6 @@ public class ChooseSensorFragment extends GeneralFragment implements
 
     private SensorManager mSensorManager;
 
-    private final String PRESSURE_KEY = "pressure";
-    private final String MAGNETIC_KEY = "magnetic";
-    private final String TEMPERATURE_KEY = "temperature";
-    private final String WIFI_KEY = "wifi";
-
     @Override
     protected int getLayoutID() {
         return R.layout.fragment_add_model;
@@ -55,10 +49,10 @@ public class ChooseSensorFragment extends GeneralFragment implements
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
 
         if(savedInstanceState != null) {
-            mPressure.setChecked(savedInstanceState.getBoolean(PRESSURE_KEY));
-            mMegnatic.setChecked(savedInstanceState.getBoolean(MAGNETIC_KEY));
-            mTemperature.setChecked(savedInstanceState.getBoolean(TEMPERATURE_KEY));
-            mWifi.setChecked(savedInstanceState.getBoolean(WIFI_KEY));
+            mPressure.setChecked(savedInstanceState.getBoolean(getString(R.string.key_pressure_on)));
+            mMegnatic.setChecked(savedInstanceState.getBoolean(getString(R.string.key_magnetic_on)));
+            mTemperature.setChecked(savedInstanceState.getBoolean(getString(R.string.key_temperature_on)));
+            mWifi.setChecked(savedInstanceState.getBoolean(getString(R.string.key_wifi_scan_on)));
         }
 
         mPressure.setOnCheckedChangeListener(this);
@@ -70,7 +64,7 @@ public class ChooseSensorFragment extends GeneralFragment implements
     @Override
     public void onResume() {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("SELECT SENSOR");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.select_sensor_title));
         setHasOptionsMenu(true);
         super.onResume();
     }
@@ -78,10 +72,10 @@ public class ChooseSensorFragment extends GeneralFragment implements
     @OnClick(R.id.collect_data)
     public void saveSetting() {
         if(!mPressure.isChecked() && !mMegnatic.isChecked() && !mWifi.isChecked() && !mTemperature.isChecked()) {
-            showSnackBar("ONE SENSOR should be selected at least");
+            showSnackBar(getString(R.string.error_one_sensor_at_least));
         } else {
             if(getActivity() instanceof ActionListener) {
-                ((ActionListener) getActivity()).onSendDataBack(bindData());
+                ((ActionListener) getActivity()).onSaveSensorChosen(bindData());
                 ((ActionListener) getActivity()).onRemodel();
             }
         }
@@ -89,29 +83,9 @@ public class ChooseSensorFragment extends GeneralFragment implements
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.switch_button_pressure:
-                if (!checkSensor(R.id.switch_button_pressure)) {
-                    showSnackBar("The Pressure meter is not available");
-                    mPressure.setChecked(false);
-                }
-                break;
-            case R.id.switch_button_megnatic:
-                if (!checkSensor(R.id.switch_button_megnatic)) {
-                    showSnackBar("The Magnetic meter is not available");
-                    mMegnatic.setChecked(false);
-                }
-                break;
-            case R.id.switch_button_temperature:
-                if (!checkSensor(R.id.switch_button_temperature)) {
-                    showSnackBar("The Temperature meter is not available");
-                    mTemperature.setChecked(false);
-                }
-            case R.id.switch_button_wifi:
-                if(!isChecked) {
-                    showSnackBar("Wifi Scan is highly recommended activted");
-                }
-                break;
+        if(!checkSensor(buttonView.getId())) {
+            showSnackBar(getString(R.string.error_sensor_not_available));
+            buttonView.setChecked(false);
         }
     }
 
@@ -119,18 +93,17 @@ public class ChooseSensorFragment extends GeneralFragment implements
     public void onDestroy() {
         super.onDestroy();
         if (getActivity() instanceof ActionListener) {
-            ((ActionListener) getActivity()).onSendDataBack(bindData());
+            ((ActionListener) getActivity()).onSaveSensorChosen(bindData());
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(PRESSURE_KEY, mPressure.isChecked());
-        outState.putBoolean(MAGNETIC_KEY, mMegnatic.isChecked());
-        outState.putBoolean(WIFI_KEY, mWifi.isChecked());
-        outState.putBoolean(TEMPERATURE_KEY, mTemperature.isChecked());
-        Log.d("setting", "onSaveInstanceState: ");
+        outState.putBoolean(getString(R.string.key_pressure_on), mPressure.isChecked());
+        outState.putBoolean(getString(R.string.key_magnetic_on), mMegnatic.isChecked());
+        outState.putBoolean(getString(R.string.key_wifi_scan_on), mWifi.isChecked());
+        outState.putBoolean(getString(R.string.key_temperature_on), mTemperature.isChecked());
     }
 
     private boolean checkSensor(int id) {
@@ -144,8 +117,9 @@ public class ChooseSensorFragment extends GeneralFragment implements
                 break;
             case R.id.switch_button_temperature:
                 mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-            case R.id.switch_button_wifi:
                 break;
+            case R.id.switch_button_wifi:
+                return true;
         }
         if(mSensor == null) {
             return false;
@@ -155,11 +129,10 @@ public class ChooseSensorFragment extends GeneralFragment implements
 
     private Bundle bindData() {
         Bundle bundle = new Bundle();
-        bundle.putBoolean(PRESSURE_KEY, mPressure.isChecked());
-        bundle.putBoolean(MAGNETIC_KEY, mMegnatic.isChecked());
-        bundle.putBoolean(WIFI_KEY, mWifi.isChecked());
-        bundle.putBoolean(TEMPERATURE_KEY, mTemperature.isChecked());
-
+        bundle.putBoolean(getString(R.string.key_pressure_on), mPressure.isChecked());
+        bundle.putBoolean(getString(R.string.key_magnetic_on), mMegnatic.isChecked());
+        bundle.putBoolean(getString(R.string.key_wifi_scan_on), mWifi.isChecked());
+        bundle.putBoolean(getString(R.string.key_temperature_on), mTemperature.isChecked());
         return bundle;
     }
 

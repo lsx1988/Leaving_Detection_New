@@ -4,6 +4,7 @@ import org.litepal.crud.DataSupport;
 
 /**
  * Created by shixunliu on 15/5/17.
+ * The class is used for storing Temperature value in database
  */
 
 public class TemperatureData extends DataSupport {

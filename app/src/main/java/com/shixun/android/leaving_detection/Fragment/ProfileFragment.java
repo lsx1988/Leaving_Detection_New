@@ -22,10 +22,6 @@ public class ProfileFragment extends GeneralFragment {
     TextView mPressure;
     @BindView(R.id.profile_temperature)
     TextView mTemperature;
-    @BindView(R.id.profile_private_model)
-    TextView mCustomModel;
-    @BindView(R.id.profile_public_model)
-    TextView mDefaultModel;
 
     @Override
     protected int getLayoutID() {
@@ -36,26 +32,22 @@ public class ProfileFragment extends GeneralFragment {
     public void onResume() {
         updateUI(getArguments());
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.profile));
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.menu_profile));
         super.onResume();
     }
 
     private void updateUI(Bundle bundle) {
 
         if (bundle == null) {
-            mPressure.setText("Not Valid");
-            mMagnetic.setText("Not Valid");
-            mWifi.setText("Not Valid");
-            mTemperature.setText("Not Valid");
-            mDefaultModel.setText("Not Valid");
-            mCustomModel.setText("Not Valid");
+            mPressure.setText(getString(R.string.not_valid));
+            mMagnetic.setText(getString(R.string.not_valid));
+            mWifi.setText(getString(R.string.not_valid));
+            mTemperature.setText(getString(R.string.not_valid));
         } else {
-            mPressure.setText(String.valueOf(bundle.getBoolean("pressure")));
-            mMagnetic.setText(String.valueOf(bundle.getBoolean("magnetic")));
-            mWifi.setText(String.valueOf(bundle.getBoolean("wifi")));
-            mTemperature.setText(String.valueOf(bundle.getBoolean("temperature")));
-            mDefaultModel.setText(String.valueOf(bundle.getBoolean("default model")));
-            mCustomModel.setText(String.valueOf(bundle.getBoolean("custom model")));
+            mPressure.setText(String.valueOf(bundle.getBoolean(getString(R.string.key_pressure_on))));
+            mMagnetic.setText(String.valueOf(bundle.getBoolean(getString(R.string.key_magnetic_on))));
+            mWifi.setText(String.valueOf(bundle.getBoolean(getString(R.string.key_wifi_scan_on))));
+            mTemperature.setText(String.valueOf(bundle.getBoolean(getString(R.string.key_temperature_on))));
         }
     }
 }
