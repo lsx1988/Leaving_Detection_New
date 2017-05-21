@@ -55,6 +55,14 @@ public class RemodelFragment extends GeneralFragment {
     ProgressBar mProgressBar;
     @BindView(R.id.current_location)
     TextView mLocation;
+    @BindView(R.id.pressure_level)
+    TextView mPressure;
+    @BindView(R.id.magnetic_level)
+    TextView mMagnetic;
+    @BindView(R.id.wifi_level)
+    TextView mWifi;
+    @BindView(R.id.temperature_level)
+    TextView mTemperature;
 
     @Override
     protected int getLayoutID() {
@@ -132,13 +140,17 @@ public class RemodelFragment extends GeneralFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(Message event) {
-        if(count == 10) {
-            String str = event.getMessage();
+        String str = event.getMessage();
+        mPressure.setText(String.format("Pressure " + "%.2f" + " Pa", event.getPressure()));
+        mMagnetic.setText(String.format("Magnetic " + "%.2f" + " uT", event.getMagnetic()));
+        mTemperature.setText(String.format("Temperature " + "%.2f" + " \u2103", event.getTemperature()));
+        mWifi.setText(String.format("Wifi " + "%.2f" + " dB", event.getWifi()));
+        //if(count == 10) {
             rawData = rawData + String.valueOf(label) + str + "\n";
             Log.d(TAG, str);
-            count = 0;
-        }
-        count++;
+            count = -1;
+        //}
+        //count++;
 
     }
 

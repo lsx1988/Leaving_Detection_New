@@ -9,5 +9,6 @@ class Message(var message: String?,
               var pressure: Double?,
               var magnetic: Double?,
               var temperature: Double?,
-              var wifi: Double?) {
+              var wifi: Double?,
+              var isWalking: Boolean) {
 }

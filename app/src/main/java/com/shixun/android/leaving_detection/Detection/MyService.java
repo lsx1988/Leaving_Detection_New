@@ -38,7 +38,6 @@ public class MyService extends Service{
     private List<Double> pressureDataList;
     private List<Double> magneticDataList;
     private List<Double> temperatureList;
-    private List<Float> stepList;
     private String[] strArray = new String[4];
     private double[] doubleArray = new double[4];
     private boolean isPressureOn;
@@ -46,11 +45,10 @@ public class MyService extends Service{
     private boolean isWifiscanOn;
     private boolean isTemperatureOn;
     private long lastTimeStamp;
-    private int lastSize;
-    private int count = 0;
-
     private String str = "";
-    private float stepVar;
+    private float step;
+    private List<Float> stepList;
+    private boolean isWalking;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -119,10 +117,10 @@ public class MyService extends Service{
                     break;
                 case Sensor.TYPE_STEP_COUNTER:
                     Log.d(TAG, "计步器触发: " + event.values[0]);
-                    stepList.add(event.values[0]);
+                    step = event.values[0];
             }
 
-            if (currentTimeStamp - lastTimeStamp >= 1000) {
+            if (currentTimeStamp - lastTimeStamp >= 500) {
                 if(isWifiscanOn) {
                     fixedThreadPool.execute(new WifiScanRunnable(wifiManager, strArray, doubleArray));
                 }
@@ -145,37 +143,35 @@ public class MyService extends Service{
                     fixedThreadPool.execute(new TemperatureProcessRunnable(temp, strArray, doubleArray));
                 }
 
-                if(stepList.size() > 10) {
-                    int currentIndex = stepList.size() - 1;
-                    int lastIndex = currentIndex - 5;
-                    stepVar = stepList.get(currentIndex) - stepList.get(lastIndex);
+                if(stepList.size() >= 20) {
+                    stepList.remove(0);
+                    stepList.add(step);
+                } else {
+                    stepList.add(step);
                 }
 
                 if((isPressureOn == (strArray[0]!=null))
                         && (isMagneticOn == (strArray[2]!=null))
                         && (isWifiscanOn == (strArray[1]!=null))
                         && (isTemperatureOn == (strArray[3]!=null))) {
+
                     for(String s: strArray) {
                         if(s != null) {
                             str = str + s;
                         }
                     }
 
-//                    if(stepList.size() == lastSize) {
-//                        stepVar = 0;
-//                        if(lastSize != 0) {
-//                            stepList.remove(0);
-//                            lastSize--;
-//
-//                        }
-//                    } else {
-//                        lastSize = stepList.size();
-//                    }
+                    if(step - stepList.get(0) > 5) {
+                        isWalking = true;
+                    } else {
+                        isWalking = false;
+                    }
+
                     EventBus.getDefault().post(new Message(str,
                             doubleArray[0],
                             doubleArray[2],
                             doubleArray[3],
-                            doubleArray[1]));
+                            doubleArray[1], isWalking));
                     str = "";
                 }
 
