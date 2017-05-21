@@ -20,7 +20,8 @@
     <string name="remodel_leaving">LEAVING HOME</string>
     <string name="remodel_stop">STOP SENSING</string>
     <string name="filelist">File List</string>
-
+    <string name="leaving_home">You are leaving home</string>
+    <string name="back_to_home">You are back home</string>
 
     <string name="key_pressure_on">pressure on</string>
     <string name="key_magnetic_on">magnetic on</string>

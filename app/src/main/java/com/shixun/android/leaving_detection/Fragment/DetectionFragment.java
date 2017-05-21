@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -49,6 +50,7 @@ public class DetectionFragment extends GeneralFragment {
     private String[] blank_scale = {"-r", "scale_para", "data"};
     private double[] result = new double[2];
     private File modelFile;
+    private boolean isWalking;
 
     @BindView(R.id.wifi_level)
     TextView mWifiLevelTextView;
@@ -134,10 +136,11 @@ public class DetectionFragment extends GeneralFragment {
     public void onMessageEvent(Message event) {
         mProgressBar.setVisibility(View.GONE);
         String str = "0" + event.getMessage();
-        mPressureTextView.setText("Pressure " + String.valueOf(event.getPressure()) + " Pa");
-        mMagneticTextView.setText("Magnetic " + String.valueOf(event.getMagnetic()) + " uT");
-        mTemperatureTextView.setText("Temperature " + String.valueOf(event.getTemperature()) + " C");
-        mWifiLevelTextView.setText("Wifi " + String.valueOf(event.getWifi()) + " dB");
+        isWalking = event.isWalking();
+        mPressureTextView.setText(String.format("Pressure " + "%.2f" + " Pa", event.getPressure()));
+        mMagneticTextView.setText(String.format("Magnetic " + "%.2f" + " uT", event.getMagnetic()));
+        mTemperatureTextView.setText(String.format("Temperature " + "%.2f" + " \u2103", event.getTemperature()));
+        mWifiLevelTextView.setText(String.format("Wifi " + "%.2f" + " dB", event.getWifi()));
 
         detection(str);
         possibility = result[1];
@@ -145,19 +148,19 @@ public class DetectionFragment extends GeneralFragment {
         Log.d(TAG, String.valueOf(predict));
         mPossibilityTextView.setText(String.format("Possibility :" + "%.2f", possibility * 100) + "%");
 
-        if (predict == 100.0) {
-            if (possibility >= 0.95) {
-                stayOutside = true;
-            }
+        if (predict == 100.0 && isWalking ) {
+            stayOutside = true;
             if (stayOutside == true && stayInside == true) {
                 vibrator.vibrate(1000);
+                showSnackBar(getString(R.string.leaving_home));
                 stayInside = false;
             }
         }else if (predict != 100) {
-            if (possibility <= 0.2) {
+            if (possibility <= 0.2 && !isWalking) {
                 stayInside = true;
             }
             if (stayInside == true && stayOutside == true) {
+                showSnackBar(getString(R.string.back_to_home));
                 vibrator.vibrate(1000);
                 stayOutside = false;
             }
@@ -174,6 +177,14 @@ public class DetectionFragment extends GeneralFragment {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    private void showSnackBar(String msg) {
+        Snackbar snackbar = Snackbar.make(this.getView(), msg, Snackbar.LENGTH_LONG);
+        View snackbarLayout = snackbar.getView();
+        TextView textView = (TextView)snackbarLayout.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_alert, 0, 0, 0);
+        snackbar.setDuration(3000).show();
     }
 }
 

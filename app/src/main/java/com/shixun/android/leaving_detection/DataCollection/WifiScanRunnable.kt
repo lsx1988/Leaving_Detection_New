@@ -9,16 +9,16 @@ import org.litepal.crud.DataSupport
 
 class WifiScanRunnable(val wifiManager: WifiManager, private val strArray: Array<String>, private val doubleArray: DoubleArray) : Runnable {
 
-    private val dataSize = 10
+    private val dataSize = 20
 
     override fun run() {
         scanAndSaveWifiData()
+        //val currentValue = scanAndSaveWifiData()
         if (DataSupport.count(WifiData::class.java) >= dataSize) {
-            val currentValue = scanAndSaveWifiData()
-            //val currentValue = getMean("homeWifiLevel", WifiData::class.java)
-            val std = getStd("meanOfHomeWifi")
-            val sumVar = getSumVar("meanOfHomeWifi")
-            doubleArray[1] = currentValue
+            val currentValue = "%.3f".format(getMean("homeWifiLevel", WifiData::class.java))
+            val std = "%.3f".format(getStd("meanOfHomeWifi"))
+            val sumVar = "%.3f".format(getSumVar("meanOfHomeWifi"))
+            doubleArray[1] = currentValue.toDouble()
             strArray[1] = " 30:$currentValue 31:$std 32:$sumVar"
 
             val lastId = DataSupport.findFirst<WifiData>(WifiData::class.java).id
@@ -28,21 +28,21 @@ class WifiScanRunnable(val wifiManager: WifiManager, private val strArray: Array
 
     private fun scanAndSaveWifiData(): Double {
 
-        var allWifiLevel = 0.0
+//        var allWifiLevel = 0.0
         wifiManager.startScan()
         val wifiInfo = wifiManager.connectionInfo
         var homeWifiLevel = wifiInfo!!.rssi.toDouble()
-        val scanResults = wifiManager.scanResults
+//        val scanResults = wifiManager.scanResults
 
-        scanResults.forEach {
-            allWifiLevel += it.level
-        }
-        val meanOfAllWifi = allWifiLevel / scanResults.size
+//        scanResults.forEach {
+//            allWifiLevel += it.level
+//        }
+//        val meanOfAllWifi = allWifiLevel / scanResults.size
 
         val sample = WifiData()
         sample.homeWifiLevel = homeWifiLevel
-        sample.meanOfAllWifiLevel = meanOfAllWifi
-        sample.stdOfAllWifiLevel = meanOfAllWifi
+//        sample.meanOfAllWifiLevel = meanOfAllWifi
+//        sample.stdOfAllWifiLevel = meanOfAllWifi
         if (DataSupport.count(WifiData::class.java) == 0) {
             sample.meanOfHomeWifi = homeWifiLevel
         } else {

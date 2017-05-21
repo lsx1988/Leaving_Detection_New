@@ -12,9 +12,9 @@ public class WifiData extends DataSupport{
 
     private Double homeWifiLevel;
 
-    private Double meanOfAllWifiLevel;
+    //private Double meanOfAllWifiLevel;
 
-    private Double stdOfAllWifiLevel;
+    //private Double stdOfAllWifiLevel;
 
     private Double meanOfHomeWifi;
 
@@ -26,21 +26,21 @@ public class WifiData extends DataSupport{
         this.homeWifiLevel = homeWifiLevel;
     }
 
-    public Double getMeanOfAllWifiLevel() {
-        return meanOfAllWifiLevel;
-    }
-
-    public void setMeanOfAllWifiLevel(Double meanOfAllWifiLevel) {
-        this.meanOfAllWifiLevel = meanOfAllWifiLevel;
-    }
-
-    public Double getStdOfAllWifiLevel() {
-        return stdOfAllWifiLevel;
-    }
-
-    public void setStdOfAllWifiLevel(Double stdOfAllWifiLevel) {
-        this.stdOfAllWifiLevel = stdOfAllWifiLevel;
-    }
+//    public Double getMeanOfAllWifiLevel() {
+//        return meanOfAllWifiLevel;
+//    }
+//
+//    public void setMeanOfAllWifiLevel(Double meanOfAllWifiLevel) {
+//        this.meanOfAllWifiLevel = meanOfAllWifiLevel;
+//    }
+//
+//    public Double getStdOfAllWifiLevel() {
+//        return stdOfAllWifiLevel;
+//    }
+//
+//    public void setStdOfAllWifiLevel(Double stdOfAllWifiLevel) {
+//        this.stdOfAllWifiLevel = stdOfAllWifiLevel;
+//    }
 
     public Double getMeanOfHomeWifi() {
         return meanOfHomeWifi;
